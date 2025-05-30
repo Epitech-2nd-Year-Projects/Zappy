@@ -1,0 +1,77 @@
+##
+## EPITECH PROJECT, 2025
+## panoramix
+## File description:
+## Makefile
+##
+
+CC			=	gcc
+CFLAGS		=	-Wall \
+ 				-Wextra \
+ 				-Werror \
+ 				-Wshadow \
+ 				-Wconversion \
+ 				-Wunreachable-code \
+ 				-Wmissing-prototypes \
+ 				-Wmissing-declarations \
+ 				-Wconversion \
+CPPFLAGS	=	-iquote include
+LDLIBS		=
+
+SRC_DIR 	=	src/
+OBJ_DIR		=	obj/
+TEST_DIR	=	tests/
+
+RM			?= 	rm -f
+
+MAIN_SRC	=	$(SRC_DIR)main.c
+MAIN_OBJ	=	$(MAIN_SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+SRC 		=
+OBJ			= 	$(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+TEST_SRC	=	$(TEST_DIR)tests.c
+TEST_OBJ 	= 	$(TEST_SRC:$(TEST_DIR)%.c=$(OBJ_DIR)%.o)
+
+NAME 		=   server
+NAME_TEST	=	unit_tests
+
+.PHONY: all clean fclean re valgrind
+
+all: $(NAME)
+
+$(OBJ_DIR)%.o:	$(SRC_DIR)%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR)%.o:	$(TEST_DIR)%.c	|	$(OBJ_DIR)
+	@$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $@
+
+$(NAME): $(OBJ) $(MAIN_OBJ)
+	$(CC) $^ $(LDLIBS) -o $@
+
+$(NAME_TEST): $(OBJ) $(TEST_OBJ)
+	$(MAKE) -C ./lib/my
+	$(CC) $^ $(LDLIBS) -o $@
+
+
+valgrind: CFLAGS += -g3
+valgrind: fclean all
+
+tests_run: CFLAGS += --coverage
+tests_run: LDLIBS += -lcriterion
+tests_run: fclean $(NAME_TEST)
+
+clean: tests_clean
+	$(RM) vgcore.*
+	$(RM) $(OBJ_DIR)*.o
+
+tests_clean:
+	$(RM) $(OBJ_DIR)*.gcno $(OBJ_DIR)*.gcda
+
+fclean: clean
+	$(RM) -r $(OBJ_DIR)
+	$(RM) $(NAME)
+	$(RM) $(NAME_TEST)
+
+re: fclean all
