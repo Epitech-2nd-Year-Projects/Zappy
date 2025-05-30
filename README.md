@@ -1,6 +1,6 @@
 # Zappy Monorepo
 
-This repository groups all components of **Zappy** into a single monorepo:
+This repository groups all components of **Zappy** into a single monorepo :
 - **zappy_server/** — game server (C)
 - **zappy_ai/**     — AI client (Python)
 - **zappy_client/** — graphical client (Unreal Engine/C++)
