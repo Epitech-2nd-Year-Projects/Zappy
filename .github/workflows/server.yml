@@ -30,6 +30,7 @@ jobs:
           fi
 
   server-build-and-test:
+    name: Server build and test
     runs-on: ubuntu-latest
     container:
       image: epitechcontent/epitest-docker
