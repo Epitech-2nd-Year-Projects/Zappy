@@ -4,6 +4,7 @@
 ** File description:
 ** Main
 */
+
 #include "Macro.hpp"
 
 int main(int argc, [[maybe_unused]] char const *argv[])
