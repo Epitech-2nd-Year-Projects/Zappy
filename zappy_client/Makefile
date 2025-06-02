@@ -54,6 +54,10 @@ fclean: clean
 
 re: fclean all
 
+debug_asan: CPPFLAGS += -g3 -fsanitize=address
+debug_asan: LDFLAGS += -fsanitize=address
+debug_asan: fclean all
+
 debug_valgrind: CPPFLAGS += -g3
 debug_valgrind: fclean all
 
