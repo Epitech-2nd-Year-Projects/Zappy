@@ -19,7 +19,7 @@ public:
 /**
      * @brief Constructs a Texture by loading an image from a specified file path.
      * @param filePath The path to the image file (e.g., .png, .jpg, .bmp).
-     * @throws std::runtime_error if the texture fails to load.
+     * @throws TextureException if the texture fails to load.
      */
     explicit Texture(const std::string& filePath);
 
