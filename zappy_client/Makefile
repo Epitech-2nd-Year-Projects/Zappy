@@ -21,7 +21,8 @@ RM 					?= 		rm -f
 
 BUILD_DIR			=		./build
 
-SRC					=		Source/Main.cpp
+SRC					=		Source/Main.cpp					\
+							Source/Raylib/Core/Window.cpp
 
 NAME				=		zappy_gui
 
