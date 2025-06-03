@@ -22,7 +22,7 @@ public:
      * @param height The height of the window in pixels.
      * @param title The title of the window.
      * @param targetFps The target frame rate (defaults to 60 FPS).
-     * @throws std::runtime_error if Raylib initialization fails.
+     * @throws WindowException if Raylib initialization fails.
      */
     Window(int width, int height, const std::string &title, int targetFps = 60);
 
