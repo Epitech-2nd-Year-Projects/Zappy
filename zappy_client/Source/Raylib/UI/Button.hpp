@@ -116,15 +116,14 @@ public:
 
 private:
     std::string text_;
-    int         fontSize_;
-    float       spacing_;
-    Font        font_;
-    bool        useCustomFont_;
-
-    Color       normalColor_;
-    Color       hoveredColor_;
-    Color       pressedColor_;
-    Color       textColor_;
+    int fontSize_;
+    float spacing_;
+    Font  font_;
+    bool  useCustomFont_;
+    Color normalColor_;
+    Color hoveredColor_;
+    Color pressedColor_;
+    Color textColor_;
 
     ButtonState currentState_;
     std::function<void()> onClickCallback_;

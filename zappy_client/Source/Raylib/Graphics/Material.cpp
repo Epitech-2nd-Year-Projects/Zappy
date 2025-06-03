@@ -10,7 +10,7 @@
 namespace Raylib {
 namespace Graphics {
 
-Material::Material(Color tint) : owns_shader_(false)
+Material::Material(Color tint) : ownsShader_(false)
 {
     material_ = ::LoadMaterialDefault();
     material_.maps[MATERIAL_MAP_DIFFUSE].color = tint;
@@ -24,7 +24,7 @@ Material::Material(const Texture &diffuseTexture, Color tint)
 
 Material::~Material()
 {
-    if (owns_shader_ && material_.shader.id != 0) {
+    if (ownsShader_ && material_.shader.id != 0) {
         ::UnloadShader(material_.shader);
     }
 }
@@ -48,10 +48,10 @@ void Material::SetTint(Color tint)
 
 void Material::SetShader(Shader shader)
 {
-    if (owns_shader_ && material_.shader.id != 0)
+    if (ownsShader_ && material_.shader.id != 0)
         ::UnloadShader(material_.shader);
     material_.shader = shader;
-    owns_shader_ = (shader.id != 0);
+    ownsShader_ = (shader.id != 0);
 }
 
 const ::Material &Material::GetRLMaterial() const

@@ -80,11 +80,11 @@ public:
 
 private:
     std::string text_;
-    int         fontSize_;
-    Color       color_;
-    Font        font_;
-    float       spacing_;
-    bool        useCustomFont_;
+    int fontSize_;
+    Color color_;
+    Font  font_;
+    float spacing_;
+    bool  useCustomFont_;
 };
 }
 }

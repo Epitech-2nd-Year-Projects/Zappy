@@ -75,7 +75,7 @@ public:
 
 private:
     ::Material material_;
-    bool owns_shader_;
+    bool ownsShader_;
 };
 
 }
