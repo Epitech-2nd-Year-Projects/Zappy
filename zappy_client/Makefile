@@ -24,7 +24,8 @@ BUILD_DIR			=		./build
 SRC					=		Source/Main.cpp						\
 							Source/Raylib/Core/Window.cpp		\
 							Source/Raylib/Core/Input.cpp		\
-							Source/Raylib/Graphics/Camera.cpp
+							Source/Raylib/Graphics/Camera.cpp	\
+							Source/Raylib/Graphics/Texture.cpp
 
 NAME				=		zappy_gui
 
