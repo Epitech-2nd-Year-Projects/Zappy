@@ -131,6 +131,5 @@ public:
 private:
     Camera3D camera_;
 };
-
 }
 }

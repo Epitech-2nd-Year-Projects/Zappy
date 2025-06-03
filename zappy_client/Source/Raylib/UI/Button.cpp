@@ -129,6 +129,5 @@ void Button::SetSpacing(float newSpacing)
 {
     spacing_ = newSpacing;
 }
-
 } // namespace UI
 } // namespace Raylib

@@ -46,6 +46,5 @@ Rectangle Widget::GetBounds() const
 {
     return bounds_;
 }
-
 }
 }

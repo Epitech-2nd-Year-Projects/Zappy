@@ -77,6 +77,5 @@ private:
     ::Material material_;
     bool ownsShader_;
 };
-
 }
 }

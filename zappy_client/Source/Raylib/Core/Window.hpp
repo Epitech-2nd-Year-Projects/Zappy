@@ -104,6 +104,5 @@ private:
     std::string title_;
     bool is_window_initialized_;
 };
-
 } // namespace Core
 } // namespace Raylib

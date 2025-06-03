@@ -181,6 +181,5 @@ public:
      */
     static void DrawTexturedPlane(Vector3 centerPos, Vector2 size, const Material &material);
 };
-
 }
 }

@@ -100,6 +100,5 @@ public:
      */
     static Ray GetMouseRay(Vector2 mousePosition, Camera3D camera);
 };
-
 }
 }

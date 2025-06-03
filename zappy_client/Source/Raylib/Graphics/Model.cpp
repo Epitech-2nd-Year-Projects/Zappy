@@ -48,6 +48,5 @@ bool Model::IsReady() const
 {
     return model_.meshCount > 0 && model_.meshes != nullptr;
 }
-
 }
 }

@@ -65,6 +65,5 @@ int Window::GetHeight() const
 {
     return GetScreenHeight();
 }
-
 }
 }

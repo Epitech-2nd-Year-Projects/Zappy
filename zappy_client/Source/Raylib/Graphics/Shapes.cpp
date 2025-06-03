@@ -134,6 +134,5 @@ void Shapes::DrawTexturedPlane(Vector3 centerPos, Vector2 size, const Material &
     ::UnloadModel(planeModel);
     ::UnloadMesh(planeMesh);
 }
-
 }
 }

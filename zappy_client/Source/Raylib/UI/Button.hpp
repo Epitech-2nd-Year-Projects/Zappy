@@ -128,6 +128,5 @@ private:
     ButtonState currentState_;
     std::function<void()> onClickCallback_;
 };
-
 }
 }

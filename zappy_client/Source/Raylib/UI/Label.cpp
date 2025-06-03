@@ -72,6 +72,5 @@ void Label::SetSpacing(float newSpacing)
 {
     spacing_ = newSpacing;
 }
-
 }
 }
