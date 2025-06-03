@@ -28,7 +28,8 @@ SRC					=		Source/Main.cpp						\
 							Source/Raylib/Graphics/Texture.cpp	\
 							Source/Raylib/Graphics/Material.cpp	\
 							Source/Raylib/Graphics/Shapes.cpp	\
-							Source/Raylib/UI/Widget.cpp
+							Source/Raylib/UI/Widget.cpp			\
+							Source/Raylib/UI/Label.cpp
 
 NAME				=		zappy_gui
 

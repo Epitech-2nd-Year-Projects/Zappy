@@ -84,8 +84,8 @@ public:
     Rectangle GetBounds() const;
 
 protected:
-    Rectangle bounds;
-    bool isVisible;
+    Rectangle bounds_;
+    bool isVisible_;
 };
 }
 }
