@@ -23,12 +23,12 @@ Texture::~Texture() {
     }
 }
 
-const Texture2D& Texture::GetRLTexture() const
+const Texture2D &Texture::GetRLTexture() const
 {
     return texture_;
 }
 
-Texture2D& Texture::GetRLTexture()
+Texture2D &Texture::GetRLTexture()
 {
     return texture_;
 }

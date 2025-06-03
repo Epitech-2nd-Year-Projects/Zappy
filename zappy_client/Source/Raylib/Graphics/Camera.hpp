@@ -119,14 +119,14 @@ public:
      * Useful for functions that directly interact with Raylib's Camera3D.
      * @return A const reference to the internal Camera3D structure.
      */
-    const Camera3D& GetRLCamera() const { return camera_; }
+    const Camera3D &GetRLCamera() const { return camera_; }
 
     /**
      * @brief Get a modifiable reference to the underlying Raylib Camera3D structure.
      * Use with caution, as it allows direct modification of Raylib's struct.
      * @return A reference to the internal Camera3D structure.
      */
-    Camera3D& GetRLCamera() { return camera_; }
+    Camera3D &GetRLCamera() { return camera_; }
 
 private:
     Camera3D camera_;

@@ -26,7 +26,7 @@ public:
      * @param diffuseTexture A const reference to the Texture object to use as the diffuse map.
      * @param tint The diffuse color (defaults to WHITE).
      */
-    Material(const Texture& diffuseTexture, Color tint = WHITE);
+    Material(const Texture &diffuseTexture, Color tint = WHITE);
 
     /**
      * @brief Destructor. Unloads any custom shaders associated with the material.
@@ -39,7 +39,7 @@ public:
      * The provided Texture object must be managed externally.
      * @param texture A const reference to the Texture object.
      */
-    void SetDiffuseTexture(const Texture& texture);
+    void SetDiffuseTexture(const Texture &texture);
     
     /**
      * @brief Removes the diffuse texture from this material.
@@ -64,14 +64,14 @@ public:
      * @brief Gets a const reference to the underlying Raylib Material structure.
      * @return A const reference to Material.
      */
-    const ::Material& GetRLMaterial() const;
+    const ::Material &GetRLMaterial() const;
 
     /**
      * @brief Gets a mutable reference to the underlying Raylib Material structure.
      * Use with caution.
      * @return A mutable reference to Material.
      */
-    ::Material& GetRLMaterial();
+    ::Material &GetRLMaterial();
 
 private:
     ::Material material_;

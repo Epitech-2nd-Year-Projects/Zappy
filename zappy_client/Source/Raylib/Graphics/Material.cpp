@@ -16,7 +16,7 @@ Material::Material(Color tint) : owns_shader_(false)
     material_.maps[MATERIAL_MAP_DIFFUSE].color = tint;
 }
 
-Material::Material(const Texture& diffuseTexture, Color tint)
+Material::Material(const Texture &diffuseTexture, Color tint)
     : Material(tint)
 {
     SetDiffuseTexture(diffuseTexture);
@@ -29,7 +29,7 @@ Material::~Material()
     }
 }
 
-void Material::SetDiffuseTexture(const Texture& texture)
+void Material::SetDiffuseTexture(const Texture &texture)
 {
     material_.maps[MATERIAL_MAP_DIFFUSE].texture = texture.GetRLTexture();
 }
@@ -54,12 +54,12 @@ void Material::SetShader(Shader shader)
     owns_shader_ = (shader.id != 0);
 }
 
-const ::Material& Material::GetRLMaterial() const
+const ::Material &Material::GetRLMaterial() const
 {
     return material_;
 }
 
-::Material& Material::GetRLMaterial()
+::Material &Material::GetRLMaterial()
 {
     return material_;
 }

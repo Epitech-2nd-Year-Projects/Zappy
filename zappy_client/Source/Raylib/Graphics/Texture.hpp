@@ -35,14 +35,14 @@ public:
      * @brief Gets a const reference to the underlying Raylib Texture2D structure.
      * @return A const reference to Texture2D.
      */
-    const Texture2D& GetRLTexture() const;
+    const Texture2D &GetRLTexture() const;
 
     /**
      * @brief Gets a mutable reference to the underlying Raylib Texture2D structure.
      * Use with caution.
      * @return A mutable reference to Texture2D.
      */
-    Texture2D& GetRLTexture();
+    Texture2D &GetRLTexture();
 
     /**
      * @brief Checks if the texture has been successfully loaded and is ready for use.
