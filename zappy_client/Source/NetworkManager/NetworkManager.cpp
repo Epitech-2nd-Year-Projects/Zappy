@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <netdb.h>
 #include <cstring>
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -153,19 +154,30 @@ void NetworkManager::sbp([[maybe_unused]]std::vector<std::string> &command)
 
 void NetworkManager::connectToServer()
 {
-    m_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if (m_socket < 0)
+    struct addrinfo hints = {};
+    struct addrinfo *res = nullptr;
+    std::string portStr = std::to_string(m_port);
+    int err = 0;
+
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    err = getaddrinfo(m_ip.c_str(), portStr.c_str(), &hints, &res);
+    if (err != 0)
+        throw NetworkException(std::string("getaddrinfo failed: ") + gai_strerror(err));
+    m_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    if (m_socket < 0) {
+        freeaddrinfo(res);
         throw NetworkException("Failed to create socket");
-    memset(&m_serverAddress, 0, sizeof(m_serverAddress));
-    m_serverAddress.sin_family = AF_INET;
-    m_serverAddress.sin_port = htons(m_port);
-    if (inet_pton(AF_INET, m_ip.c_str(), &m_serverAddress.sin_addr) <= 0)
-        throw NetworkException("Invalid address or address not supported");
-    if (connect(m_socket, (struct sockaddr *)&m_serverAddress, sizeof(m_serverAddress)) < 0)
+    }
+    if (connect(m_socket, res->ai_addr, res->ai_addrlen) < 0) {
+        freeaddrinfo(res);
         throw NetworkException("Connection failed");
+    }
+    freeaddrinfo(res);
     m_connected = true;
     if (m_debugMode)
         std::cout << "Connected to server at " << m_ip << ":" << m_port << std::endl;
+
 }
 
 void NetworkManager::disconnect()
