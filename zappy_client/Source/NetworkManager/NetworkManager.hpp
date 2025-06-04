@@ -46,23 +46,45 @@ class NetworkManager {
          * @note The message should be formatted according to the server's protocol
          */
         void sendMessage(const std::string &message);
-
+        
         /**
          * @brief Connect to the server
          */
         void connectToServer();
-
+        
         /**
          * @brief Disconnect from the server
          */
         void disconnect();
-
+        
         /**
          * @brief Get all messages as a single string
          * @return std::string Concatenated messages
          */
         std::string getMessages() const;
         
+        /**
+         * @brief Exception class for network errors
+         */
+        class NetworkException : public std::exception {
+            public:
+                /**
+                 * @brief Construct a new NetworkException object
+                 * @param message The exception message
+                 */
+                explicit NetworkException(const std::string &message) : m_message(message) {}
+    
+                /**
+                 * @brief Get the exception message
+                 * @return const char* Exception message
+                 */
+                virtual const char* what() const noexcept override {
+                    return m_message.c_str();
+                }
+            private:
+                std::string m_message; ///< Exception message
+        };
+
     private:
         /**
          * @brief Read messages from the server
@@ -267,27 +289,6 @@ class NetworkManager {
         bool m_debugMode; ///< Debug mode flag
         bool m_connected; ///< Connection status
     
-    /**
-     * @brief Exception class for network errors
-     */
-    class NetworkException : public std::exception {
-        public:
-            /**
-             * @brief Construct a new NetworkException object
-             * @param message The exception message
-             */
-            explicit NetworkException(const std::string &message) : m_message(message) {}
-
-            /**
-             * @brief Get the exception message
-             * @return const char* Exception message
-             */
-            virtual const char* what() const noexcept override {
-                return m_message.c_str();
-            }
-        private:
-            std::string m_message; ///< Exception message
-    };
 };
 }
 }
