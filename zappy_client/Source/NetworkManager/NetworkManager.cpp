@@ -50,6 +50,15 @@ NetworkManager::NetworkManager(const std::string &ip, const int port, bool debug
 
 NetworkManager::~NetworkManager()
 {
+    if (m_connected) {
+        disconnect();
+    }
+    if (m_receiveThread.joinable()) {
+        m_receiveThread.join();
+    }
+    if (m_debugMode) {
+        std::cout << "NetworkManager destroyed" << std::endl;
+    }
 }
 
 // Functions to handle commands
@@ -192,12 +201,9 @@ void NetworkManager::disconnect()
 
 std::string NetworkManager::getMessages() const
 {
-    return std::string("hello");
-}
-
-void NetworkManager::clearMessages()
-{
-    m_messages.clear();
+    if (m_messageQueue.empty())
+        return "";
+    return m_messageQueue.front();
 }
 
 std::size_t NetworkManager::getBytesAvailable() const
@@ -207,6 +213,11 @@ std::size_t NetworkManager::getBytesAvailable() const
     if (ioctl(m_socket, FIONREAD, &bytesAvailable) < 0)
         throw NetworkException("Error getting bytes available");
     return static_cast<std::size_t>(bytesAvailable);
+}
+
+void NetworkManager::clearMessages()
+{
+    m_messages.clear();
 }
 
 std::string NetworkManager::createMessage()
@@ -295,12 +306,21 @@ void NetworkManager::readMessages()
     }
 }
 
+void NetworkManager::sendMessage(const std::string &message)
+{
+    if (!m_connected)
+        throw NetworkException("Not connected to server");
+    if (send(m_socket, message.c_str(), message.size(), 0) < 0)
+        throw NetworkException("Error sending message");
+    if (m_debugMode)
+        std::cout << "Sent message: " << message << std::endl;
+}
+
 void NetworkManager::run()
 {
     if (!m_connected)
         connectToServer();
-    m_receiveThread = std::thread([this]() {
-    });
+    m_receiveThread = std::thread([this]() { readMessages(); });
 }
 }
 }

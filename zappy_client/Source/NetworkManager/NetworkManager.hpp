@@ -40,6 +40,14 @@ class NetworkManager {
         void run();
 
         /**
+         * @brief Send a message to the server
+         * @param message The message to send
+         * @throws NetworkException if the connection fails or message sending fails
+         * @note The message should be formatted according to the server's protocol
+         */
+        void sendMessage(const std::string &message);
+
+        /**
          * @brief Connect to the server
          */
         void connectToServer();
@@ -50,17 +58,17 @@ class NetworkManager {
         void disconnect();
 
         /**
-         * @brief Read messages from the server
-         */
-        void readMessages();
-
-        /**
          * @brief Get all messages as a single string
          * @return std::string Concatenated messages
          */
         std::string getMessages() const;
-
+        
     private:
+        /**
+         * @brief Read messages from the server
+         */
+        void readMessages();
+
         /**
          * @brief Clear all stored messages
          */
