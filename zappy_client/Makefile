@@ -23,6 +23,8 @@ BUILD_DIR			=		./build
 
 SRC					=		Source/Main.cpp								\
 							Source/NetworkManager/NetworkManager.cpp 	\
+							Source/ArgumentsHandler/Arguments.cpp		\
+							Source/Client/Client.cpp					\
 
 NAME				=		zappy_gui
 
