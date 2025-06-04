@@ -11,9 +11,10 @@
 
 namespace GUIMacro
 {
-    constexpr std::size_t EXIT_SUCCESS = 0;
-    constexpr std::size_t EXIT_FAILLURE = 84;
+    constexpr int GUI_EXIT_SUCCESS = 0;
+    constexpr int EXIT_FAILLURE = 84;
     constexpr int ERROR = -1;
 
-    constexpr std::size_t ARG_NUMBER = 5; 
+    constexpr int MIN_ARG_NUMBER = 5; 
+    constexpr int MAX_ARG_NUMBER = 6; 
 }
