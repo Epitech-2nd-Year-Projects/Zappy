@@ -168,6 +168,7 @@ void NetworkManager::connectToServer()
     std::string portStr = std::to_string(m_port);
     int err = 0;
 
+    std::cout << "Connecting to server at " << m_ip << " : " << m_port << "..." << std::endl;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     err = getaddrinfo(m_ip.c_str(), portStr.c_str(), &hints, &res);
