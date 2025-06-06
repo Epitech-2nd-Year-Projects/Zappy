@@ -1,0 +1,27 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Wshadow",
+      "-Wconversion",
+      "-Wunreachable-code",
+      "-Wmissing-prototypes",
+      "-Wmissing-declarations",
+      "-Wconversion",
+      "CPPFLAGS",
+      "=",
+      "-iquote",
+      "include",
+      "-c",
+      "-o",
+      "obj/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/vega/Zappy/zappy_server",
+    "file": "/home/vega/Zappy/zappy_server/src/main.c",
+    "output": "/home/vega/Zappy/zappy_server/obj/main.o"
+  }
+]

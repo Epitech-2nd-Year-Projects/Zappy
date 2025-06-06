@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Clangd
+.cache/
+
+# Binaries
+zappy_server
