@@ -21,17 +21,17 @@ RM 					?= 		rm -f
 
 BUILD_DIR			=		./build
 
-SRC					=		Source/Main.cpp						\
-							Source/Raylib/Core/Window.cpp		\
-							Source/Raylib/Core/Input.cpp		\
-							Source/Raylib/Graphics/Camera.cpp	\
-							Source/Raylib/Graphics/Texture.cpp	\
-							Source/Raylib/Graphics/Material.cpp	\
-							Source/Raylib/Graphics/Shapes.cpp	\
-							Source/Raylib/UI/Widget.cpp			\
-							Source/Raylib/UI/Label.cpp			\
-							Source/Raylib/UI/Button.cpp			\
-							Source/Raylib/Utils/Math.cpp
+SRC					=		Source/Main.cpp							\
+							Source/Raylib/Core/Window.cpp			\
+							Source/Raylib/Core/Input.cpp			\
+							Source/Raylib/Graphics/Camera.cpp		\
+							Source/Raylib/Graphics/Texture.cpp		\
+							Source/Raylib/Graphics/Material.cpp		\
+							Source/Raylib/Graphics/Shapes.cpp		\
+							Source/Raylib/Graphics/Animation.cpp	\
+							Source/Raylib/UI/Widget.cpp				\
+							Source/Raylib/UI/Label.cpp				\
+							Source/Raylib/UI/Button.cpp
 
 NAME				=		zappy_gui
 
