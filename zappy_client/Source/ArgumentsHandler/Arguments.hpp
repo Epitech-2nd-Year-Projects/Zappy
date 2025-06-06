@@ -5,11 +5,10 @@
 ** Arguments
 */
 
-#ifndef ARGUMENTS_HPP_
-    #define ARGUMENTS_HPP_
+#pragma once
 
-    #include <exception>
-    #include <string>
+#include <exception>
+#include <string>
 
 namespace GUI {
 namespace ArgumentsHandling {
@@ -108,8 +107,5 @@ class Arguments {
         int m_port;           /**< The validated port number */
         bool m_debugMode;     /**< Flag indicating if debug mode is enabled */
 };
-
 }
 }
-
-#endif /* !ARGUMENTS_HPP_ */

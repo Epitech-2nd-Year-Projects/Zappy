@@ -5,11 +5,10 @@
 ** Client
 */
 
-#ifndef CLIENT_HPP_
-    #define CLIENT_HPP_
+#pragma once
 
-    #include "NetworkManager/NetworkManager.hpp"
-    #include <memory>
+#include <memory>
+#include "NetworkManager/NetworkManager.hpp"
 
 namespace GUI {
 class Client {
@@ -32,5 +31,3 @@ class Client {
         std::shared_ptr<Network::NetworkManager> m_networkManager;
 };
 }
-
-#endif /* !CLIENT_HPP_ */

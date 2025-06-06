@@ -9,7 +9,7 @@
 
 namespace GUI {
 Client::Client(std::shared_ptr<Network::NetworkManager> networkManager)
-    : m_networkManager(std::move(networkManager))
+    : m_networkManager(networkManager)
 {
 }
 

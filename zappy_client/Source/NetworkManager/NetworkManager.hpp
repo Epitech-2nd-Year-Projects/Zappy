@@ -5,8 +5,7 @@
 ** NetworkManager
 */
 
-#ifndef NETWORKMANAGER_HPP_
-    #define NETWORKMANAGER_HPP_
+#pragma once
 
 #include <string>
 #include <thread>
@@ -292,5 +291,3 @@ class NetworkManager {
 };
 }
 }
-
-#endif /* !NETWORKMANAGER_HPP_ */
