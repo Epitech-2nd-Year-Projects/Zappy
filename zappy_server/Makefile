@@ -9,12 +9,7 @@ CC			=	gcc
 CFLAGS		=	-Wall \
  				-Wextra \
  				-Werror \
- 				-Wshadow \
- 				-Wconversion \
- 				-Wunreachable-code \
- 				-Wmissing-prototypes \
- 				-Wmissing-declarations \
- 				-Wconversion \
+ 				-Wpedantic
 CPPFLAGS	=	-iquote include
 LDLIBS		=
 
@@ -26,12 +21,20 @@ RM			?= 	rm -f
 
 MAIN_SRC	=	$(SRC_DIR)main.c
 MAIN_OBJ	=	$(MAIN_SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
-SRC 		=
+
+SRC 		=	$(SRC_DIR)parser/arguments.c \
+				$(SRC_DIR)parser/handlers/client_handler.c \
+				$(SRC_DIR)parser/handlers/freq_handler.c \
+				$(SRC_DIR)parser/handlers/help_handler.c \
+				$(SRC_DIR)parser/handlers/port_handler.c \
+				$(SRC_DIR)parser/handlers/size_handler.c \
+				$(SRC_DIR)parser/handlers/teams_handler.c
+
 OBJ			= 	$(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 TEST_SRC	=	$(TEST_DIR)tests.c
 TEST_OBJ 	= 	$(TEST_SRC:$(TEST_DIR)%.c=$(OBJ_DIR)%.o)
 
-NAME 		=   server
+NAME 		=   zappy_server
 NAME_TEST	=	unit_tests
 
 .PHONY: all clean fclean re valgrind
