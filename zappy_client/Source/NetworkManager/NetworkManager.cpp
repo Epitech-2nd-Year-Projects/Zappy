@@ -13,11 +13,13 @@
 #include <sys/ioctl.h>
 #include <sstream>
 #include "NetworkManager.hpp"
+#include "GameState/Types/GameTypes.hpp"
+#include "EventManager/EventType.hpp"
 
 namespace GUI {
 namespace Network {
-NetworkManager::NetworkManager(const std::string &ip, const int port, bool debugMode)
-    : m_ip(ip), m_port(port), m_debugMode(debugMode), m_connected(false)
+NetworkManager::NetworkManager(std::shared_ptr<GameState> gameState, const std::string &ip, const int port, bool debugMode)
+    : m_ip(ip), m_port(port), m_debugMode(debugMode), m_connected(false), m_gameState(std::move(gameState))
 {
     m_functions["mszx"] = [this](std::vector<std::string> &msg) {msz(msg);};
     m_functions["bct"] = [this](std::vector<std::string> &msg) {bct(msg);};
@@ -63,6 +65,17 @@ NetworkManager::~NetworkManager()
 
 // Functions to handle commands
 
+uint32_t NetworkManager::strToInt(const std::string &str) const
+{
+    try {
+        return std::stoul(str);
+    } catch (const std::invalid_argument &e) {
+        throw NetworkException("Invalid argument: " + str);
+    } catch (const std::out_of_range &e) {
+        throw NetworkException("Out of range: " + str);
+    }
+}
+
 void NetworkManager::msz([[maybe_unused]]std::vector<std::string> &command)
 {
 }
@@ -75,12 +88,23 @@ void NetworkManager::tna([[maybe_unused]]std::vector<std::string> &command)
 {
 }
 
-void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
-{
-}
-
 void NetworkManager::ppo([[maybe_unused]]std::vector<std::string> &command)
 {
+    Types::PlayerId playerId;
+    Types::Position position;
+    Types::Orientation orientation;
+    EventManager::PlayerMovedEvent event;
+
+    if (command.size() < 5)
+        return;
+    playerId = strToInt(command[1]);
+    position.x = strToInt(command[2]);
+    position.y = strToInt(command[3]);
+    orientation = static_cast<Types::Orientation>(strToInt(command[4]));
+    event.playerId = playerId;
+    event.newPosition = position;
+    event.newOrientation = orientation;
+    m_gameState->playerMovedCommand(event);
 }
 
 void NetworkManager::plv([[maybe_unused]]std::vector<std::string> &command)

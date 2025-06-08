@@ -15,6 +15,7 @@
 #include <functional>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "GameState/GameState.hpp"
 
 namespace GUI {
 namespace Network {
@@ -26,7 +27,7 @@ class NetworkManager {
          * @param port The port to connect to
          * @param debugMode Enable debug mode if true
          */
-        NetworkManager(const std::string &ip, const int port, bool debugMode = false);
+        NetworkManager(std::shared_ptr<GameState> gameState, const std::string &ip, const int port, bool debugMode = false);
 
         /**
          * @brief Destroy the NetworkManager object
@@ -85,6 +86,13 @@ class NetworkManager {
         };
 
     private:
+        /**
+         * @brief Convert a string to an unsigned integer
+         * @param str The string to convert
+         * @return u_int32_t The converted unsigned integer
+         */
+        u_int32_t strToInt(const std::string &str) const;
+
         /**
          * @brief Read messages from the server
          */
@@ -287,7 +295,7 @@ class NetworkManager {
         int m_socket; ///< Socket descriptor
         bool m_debugMode; ///< Debug mode flag
         bool m_connected; ///< Connection status
-    
+        std::shared_ptr<GameState> m_gameState; ///< Reference to the game state
 };
 }
 }
