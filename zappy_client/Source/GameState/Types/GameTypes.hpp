@@ -126,6 +126,7 @@ using PlayerId = uint32_t;      ///< Unique player identifier
 using EggId = uint32_t;         ///< Unique egg identifier
 using TeamId = uint32_t;        ///< Unique team identifier
 using EntityId = uint32_t;      ///< Generic entity identifier
+using PlayerLvl = uint32_t;     ///< Player level identifier
 
 /**
  * @brief Time unit type
