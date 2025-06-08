@@ -91,14 +91,14 @@ enum class Orientation : uint8_t {
  * @details Matches the protocol order: q0=food, q1=linemate, etc.
  */
 enum class ResourceType : uint8_t {
-    FOOD = 0,       ///< Food resource (q0)
-    LINEMATE = 1,   ///< Linemate stone (q1)
-    DERAUMERE = 2,  ///< Deraumere stone (q2)
-    SIBUR = 3,      ///< Sibur stone (q3)
-    MENDIANE = 4,   ///< Mendiane stone (q4)
-    PHIRAS = 5,     ///< Phiras stone (q5)
-    THYSTAME = 6,   ///< Thystame stone (q6)
-    COUNT = 7       ///< Total number of resource types
+    FOOD = 0,   ///< Food resource (q0)
+    LINEMATE,   ///< Linemate stone (q1)
+    DERAUMERE,  ///< Deraumere stone (q2)
+    SIBUR,      ///< Sibur stone (q3)
+    MENDIANE,   ///< Mendiane stone (q4)
+    PHIRAS,     ///< Phiras stone (q5)
+    THYSTAME,   ///< Thystame stone (q6)
+    COUNT       ///< Total number of resource types
 };
 
 /**
@@ -109,6 +109,7 @@ enum class EntityType : uint8_t {
     PLAYER,         ///< Player entity
     EGG,           ///< Egg entity
     TILE,          ///< Map tile entity
+    RESSOURCE,     ///< Resource entity
     INCANTATION   ///< Incantation entity
 };
 
