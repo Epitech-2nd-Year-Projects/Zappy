@@ -168,7 +168,6 @@ void NetworkManager::connectToServer()
     std::string portStr = std::to_string(m_port);
     int err = 0;
 
-    std::cout << "Connecting to server at " << m_ip << " : " << m_port << "..." << std::endl;
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     err = getaddrinfo(m_ip.c_str(), portStr.c_str(), &hints, &res);
@@ -289,6 +288,8 @@ void NetworkManager::readMessages()
 
     while (m_connected) {
         bytesAvailable = getBytesAvailable();
+        if (bytesAvailable == 0)
+            continue;
         buffer = static_cast<char *>(calloc(bytesAvailable + 1, sizeof(char)));
         bytesRead = recv(m_socket, buffer, bytesAvailable, 0);
         if (bytesRead < 0)
@@ -319,9 +320,12 @@ void NetworkManager::sendMessage(const std::string &message)
 
 void NetworkManager::run()
 {
-    if (!m_connected)
-        connectToServer();
-    m_receiveThread = std::thread([this]() { readMessages(); });
+    m_receiveThread = std::thread([this]()
+    {
+        if (!m_connected)
+            connectToServer();
+        readMessages();
+    });
 }
 }
 }

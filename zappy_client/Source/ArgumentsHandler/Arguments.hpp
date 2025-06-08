@@ -105,7 +105,7 @@ class Arguments {
         
         std::string m_ip;     /**< The validated IP address or hostname */
         int m_port;           /**< The validated port number */
-        bool m_debugMode;     /**< Flag indicating if debug mode is enabled */
+        bool m_debugMode = false ;     /**< Flag indicating if debug mode is enabled */
 };
 }
 }
