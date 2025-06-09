@@ -33,6 +33,46 @@ struct Position {
      * @param y_ Y coordinate
      */
     constexpr Position(int32_t x_, int32_t y_) noexcept : x(x_), y(y_) {}
+
+    /**
+     * @brief Less than operator
+     * @param other Position to compare with
+     * @return true if this position is less than the other
+     */
+    constexpr bool operator<(const Position &other) const noexcept
+    {
+        return (x < other.x) || (x == other.x && y < other.y);
+    }
+
+    /**
+     * @brief Greater than operator
+     * @param other Position to compare with
+     * @return true if this position is greater than the other
+     */
+    constexpr bool operator>(const Position &other) const noexcept
+    {
+        return (x > other.x) || (x == other.x && y > other.y);
+    }
+
+    /**
+     * @brief Less than or equal to operator
+     * @param other Position to compare with
+     * @return true if this position is less than or equal to the other
+     */
+    constexpr bool operator<=(const Position &other) const noexcept
+    {
+        return !(*this > other);
+    }
+
+    /**
+     * @brief Greater than or equal to operator
+     * @param other Position to compare with
+     * @return true if this position is greater than or equal to the other
+     */
+    constexpr bool operator>=(const Position &other) const noexcept
+    {
+        return !(*this < other);
+    }
     
     /**
      * @brief Equality operator
