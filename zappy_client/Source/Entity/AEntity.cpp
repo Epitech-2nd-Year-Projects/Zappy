@@ -15,10 +15,6 @@ AEntity::AEntity(uint32_t id, std::shared_ptr<Types::Position> position,
     , m_orientation(orientation)
 {}
 
-void AEntity::update()
-{
-}
-
 void AEntity::setPosition(Types::Position position)
 {
 

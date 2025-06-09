@@ -19,8 +19,6 @@ class AEntity : public IEntity {
                 Types::Orientation orientation = Types::Orientation::NORTH);
         ~AEntity() = default;
 
-        void update() override;
-
         void setPosition(Types::Position position) override;
         void setOrientation(Types::Orientation orientation) override;
     protected:
