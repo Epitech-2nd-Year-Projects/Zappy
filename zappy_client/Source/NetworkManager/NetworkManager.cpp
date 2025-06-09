@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sstream>
-#include "NetworkManager.hpp"
+#include "NetworkManager/NetworkManager.hpp"
 #include "GameState/Types/GameTypes.hpp"
 #include "EventManager/EventType.hpp"
 

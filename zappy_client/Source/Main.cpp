@@ -10,14 +10,15 @@
 #include "Macro.hpp"
 #include "ArgumentsHandler/Arguments.hpp"
 #include "NetworkManager/NetworkManager.hpp"
+#include "EventManager/EventBus.hpp"
 #include "Client/Client.hpp"
 
 int main(int argc, [[maybe_unused]] char const *argv[])
 {
     try {
         GUI::ArgumentsHandling::Arguments args(argc, argv);
-        
-        std::shared_ptr<GUI::GameState> gameState = std::make_shared<GUI::GameState>();
+        GUI::EventManager::EventBus eventBus;
+        std::shared_ptr<GUI::GameState> gameState = std::make_shared<GUI::GameState>(eventBus);
         GUI::Client client(std::make_shared<GUI::Network::NetworkManager>(gameState, args.getIp(), args.getPort(), args.isDebugMode()));
 
         client.runClient();
