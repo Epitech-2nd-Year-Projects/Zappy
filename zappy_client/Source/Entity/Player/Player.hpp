@@ -114,7 +114,7 @@ class Player : public AEntity {
          * @brief Increase the player's level by one
          */
         void lvlUp();
-    private:
+    protected:
         Types::ResourceArray m_inventory;  ///< The player's resource inventory
         std::string m_teamName;           ///< The team name the player belongs to
         uint32_t m_level;                 ///< The player's current level

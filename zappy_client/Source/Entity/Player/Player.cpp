@@ -63,15 +63,20 @@ void Player::lvlUp()
 
 void Player::removeResource(Types::ResourceType resourceType, std::size_t amount)
 {
-    if (m_inventory[static_cast<size_t>(resourceType)] >= amount) {
-        m_inventory[static_cast<size_t>(resourceType)] -= amount;
+    if (resourceType >= Types::ResourceType::COUNT)
+        return;
+    auto &resourceCount = m_inventory[static_cast<size_t>(resourceType)];
+    if (resourceCount >= amount) {
+        resourceCount -= amount;
     } else {
-        m_inventory[static_cast<size_t>(resourceType)] = 0;
+        resourceCount = 0;
     }
 }
 
 void Player::addResource(Types::ResourceType resourceType, std::size_t amount)
 {
-    m_inventory[static_cast<size_t>(resourceType)] += amount;
+    if (resourceType < Types::ResourceType::COUNT) {
+        m_inventory[static_cast<size_t>(resourceType)] += amount;
+    }
 }
 }
