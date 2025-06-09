@@ -19,18 +19,19 @@ namespace GUI {
 
 class GraphicalManager {
 public:
-
     GraphicalManager();
     ~GraphicalManager();
+
+    void runRender();
 
 private:
     std::string m_windowName;
     std::size_t m_windowWidth;
     std::size_t m_windowHeight;
-
     Raylib::Core::Window m_window;
     Raylib::Graphics::Camera m_camera;
 
+    void render();
 
     class GraphicalManagerException : public std::exception {
     public:
