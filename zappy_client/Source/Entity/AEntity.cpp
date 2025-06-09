@@ -8,18 +8,12 @@
 #include "Entity/AEntity.hpp"
 
 namespace GUI {
-AEntity::AEntity(std::shared_ptr<Types::Position> position, uint32_t id,
-                 std::unique_ptr<Raylib::Graphics::Animation> animation,
-                 std::unique_ptr<Raylib::Graphics::Model> model)
-    : m_position(std::move(position))
-    , m_id(id)
-    , m_animation(std::move(animation))
-    , m_model(std::move(model))
+AEntity::AEntity(uint32_t id, std::shared_ptr<Types::Position> position,
+                 Types::Orientation orientation)
+    : m_id(id)
+    , m_position(std::move(position))
+    , m_orientation(orientation)
 {}
-
-void AEntity::draw() const
-{
-}
 
 void AEntity::update()
 {

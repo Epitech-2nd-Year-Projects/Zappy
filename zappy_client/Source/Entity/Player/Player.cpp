@@ -1,0 +1,77 @@
+/*
+** EPITECH PROJECT, 2025
+** Zappy [WSL: Ubuntu]
+** File description:
+** Player
+*/
+
+#include "Entity/Player/Player.hpp"
+
+namespace GUI {
+Player::Player(uint32_t id, std::shared_ptr<Types::Position> position,
+                uint32_t level, std::string &teamName, Types::Orientation orientation)
+    : AEntity(id, std::move(position), orientation)
+    , m_teamName(teamName)
+    , m_level(level)
+{
+    m_inventory.fill(0);
+}
+
+Player::~Player()
+{
+}
+
+Types::ResourceArray Player::getInventory() const { return m_inventory; }
+
+std::string Player::getTeamName() const { return m_teamName; }
+
+uint32_t Player::getLevel() const { return m_level; }
+
+uint32_t Player::getLife() const { return m_life; }
+
+bool Player::isAlive() const { return Alive; }
+
+void Player::setInventory(const Types::ResourceArray &inventory)
+{
+    m_inventory = inventory;
+}
+
+void Player::setTeamName(std::string &teamId)
+{
+    m_teamName = teamId;
+}
+
+void Player::setLevel(uint32_t level)
+{
+    m_level = level;
+}
+
+void Player::setLife(uint32_t life)
+{
+    m_life = life;
+}
+
+void Player::setAlive(bool alive)
+{
+    Alive = alive;
+}
+
+void Player::lvlUp()
+{
+    m_level++;
+}
+
+void Player::removeResource(Types::ResourceType resourceType, std::size_t amount)
+{
+    if (m_inventory[static_cast<size_t>(resourceType)] >= amount) {
+        m_inventory[static_cast<size_t>(resourceType)] -= amount;
+    } else {
+        m_inventory[static_cast<size_t>(resourceType)] = 0;
+    }
+}
+
+void Player::addResource(Types::ResourceType resourceType, std::size_t amount)
+{
+    m_inventory[static_cast<size_t>(resourceType)] += amount;
+}
+}

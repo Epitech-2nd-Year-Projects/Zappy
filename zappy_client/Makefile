@@ -38,6 +38,7 @@ SRC					=		Source/Main.cpp								\
 							Source/Raylib/Graphics/Animation.cpp		\
 							Source/GameState/GameState.cpp				\
 							Source/Entity/AEntity.cpp					\
+							Source/Entity/Player/Player.cpp					\
 
 NAME				=		zappy_gui
 

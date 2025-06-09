@@ -14,7 +14,6 @@ class IEntity {
     public:
         virtual ~IEntity() = default;
 
-        virtual void draw() const = 0;
         virtual void update() = 0;
         virtual void setPosition(Types::Position position) = 0;
         virtual void setOrientation(Types::Orientation orientation) = 0;
