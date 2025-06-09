@@ -87,6 +87,27 @@ public:
      * @return A mutable reference to Model.
      */
     ::Model &GetRLModel() { return model_; }
+
+    /**
+     * @brief Checks for a collision between a ray and the model's bounding box.
+     * This is a fast, low-cost check, ideal for preliminary collision tests.
+     * @param ray The ray to test for collision.
+     * @return A RayCollision structure containing information about the hit
+     * (hit, distance, point, normal).
+     */
+    ::RayCollision CheckCollision(const ::Ray &ray) const;
+
+    /**
+     * @brief Checks for a precise collision between a ray and the model's meshes.
+     * This is a more performance-intensive check that tests against the actual
+     * model geometry (triangles). It is recommended to first check against the
+     * bounding box.
+     * @param ray The ray to test for collision.
+     * @return A RayCollision structure for the closest hit found among all
+     * meshes. If no hit, `collision.hit` will be false.
+     */
+    ::RayCollision CheckCollisionMesh(const ::Ray &ray) const;
+
 private:
     ::Model model_;
 

@@ -5,6 +5,7 @@
 ** Model
 */
 
+#include <float.h>
 #include "Raylib/Graphics/Model.hpp"
 
 namespace Raylib {
@@ -47,6 +48,28 @@ void Model::SetMaterial(const Material &material, int materialIndex) {
 bool Model::IsReady() const
 {
     return model_.meshCount > 0 && model_.meshes != nullptr;
+}
+
+::RayCollision Model::CheckCollision(const ::Ray &ray) const
+{
+    BoundingBox bbox = GetModelBoundingBox(model_);
+    return GetRayCollisionBox(ray, bbox);
+}
+
+::RayCollision Model::CheckCollisionMesh(const ::Ray &ray) const
+{
+    RayCollision closestCollision = {0};
+    closestCollision.hit = false;
+    closestCollision.distance = FLT_MAX;
+
+    for (std::size_t i = 0; i < model_.meshCount; ++i) {
+        Mesh mesh = model_.meshes[i];
+        RayCollision collision = GetRayCollisionMesh(ray, mesh, model_.transform);
+        if (collision.hit && collision.distance < closestCollision.distance) {
+            closestCollision = collision;
+        }
+    }
+    return closestCollision;
 }
 }
 }
