@@ -89,7 +89,7 @@ static bool process_client(server_t *server, int index, time_t now)
 {
     struct pollfd *pfd = &server->pfds[index + 1];
     client_t *client = &server->clients[index];
-    char buffer[1024] = {0};
+    char buffer[BUFFER_SIZE] = {0};
 
     if (pfd->revents & (POLLERR | POLLHUP)) {
         return false;
