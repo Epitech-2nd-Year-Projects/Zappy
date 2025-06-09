@@ -17,10 +17,10 @@ GraphicalManager::GraphicalManager()
   m_windowHeight(DEFAULT_WINDOW_HEIGHT),
   m_window(m_windowWidth, m_windowHeight, m_windowName),
   m_camera({10.0f, 0.0f, 0.0f},
-               {0.0f, 0.0f, 0.0f},
-               {0.0f, 1.0f, 0.0f},
-               45.0f,
-               CAMERA_PERSPECTIVE)
+            {0.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f},
+            45.0f,
+            CAMERA_PERSPECTIVE)
 {
 }
 
