@@ -88,6 +88,10 @@ void NetworkManager::tna([[maybe_unused]]std::vector<std::string> &command)
 {
 }
 
+void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
+{
+}
+
 void NetworkManager::ppo([[maybe_unused]]std::vector<std::string> &command)
 {
     Types::PlayerId playerId;
@@ -105,6 +109,10 @@ void NetworkManager::ppo([[maybe_unused]]std::vector<std::string> &command)
     event.newPosition = position;
     event.newOrientation = orientation;
     m_gameState->playerMovedCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " moved to (" << position.x << ", " << position.y
+                  << ") facing " << static_cast<int>(orientation) << std::endl;
+    }
 }
 
 void NetworkManager::plv([[maybe_unused]]std::vector<std::string> &command)
