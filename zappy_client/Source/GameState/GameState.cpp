@@ -9,7 +9,8 @@
 #include "GameState/GameState.hpp"
 
 namespace GUI {
-GameState::GameState()
+GameState::GameState(EventManager::EventBus &eventBus)
+    : m_eventBus(eventBus)
 {
 }
 
