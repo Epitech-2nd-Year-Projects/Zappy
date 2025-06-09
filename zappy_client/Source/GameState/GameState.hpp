@@ -28,13 +28,18 @@ class GameState {
 
         void playerMovedCommand(const EventManager::PlayerMovedEvent &event);
 
+        std::shared_ptr<IEntity> getEntity(uint32_t id) const;
+        std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;
+        std::vector<std::shared_ptr<Player>> getTeamPlayers(const std::string &teamName) const;
+        std::shared_ptr<MapTile> getMapTile(const Types::Position &position) const;
+        std::shared_ptr<Egg> getEgg(uint32_t id) const;
     private:
         std::mutex m_mutex;
         EventManager::EventBus m_eventBus;
         std::unordered_map<uint32_t, std::shared_ptr<IEntity>> m_entities;
         std::unordered_map<Types::PlayerId, std::shared_ptr<Player>> m_players;
-        std::unordered_map<std::string, std::shared_ptr<Player>> m_teams;
-        std::map<Types::Position, std::shared_ptr<MapTile>> m_mapTiles;
+        std::unordered_map<std::string, std::vector<std::shared_ptr<Player>>> m_teams;
         std::unordered_map<uint32_t, std::shared_ptr<Egg>> m_eggs;
+        std::map<Types::Position, std::shared_ptr<MapTile>> m_mapTiles;
 };
 }

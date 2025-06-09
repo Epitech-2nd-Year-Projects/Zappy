@@ -34,4 +34,50 @@ void GameState::playerMovedCommand(const EventManager::PlayerMovedEvent &event)
         std::cout << "Player with ID " << event.playerId << " not found in game state." << std::endl;
     }
 }
+
+std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
+{
+    auto it = m_entities.find(id);
+
+    if (it != m_entities.end())
+        return it->second;
+    return nullptr;
+}
+
+std::shared_ptr<Player> GameState::getPlayer(Types::PlayerId playerId) const
+{
+    auto it = m_players.find(playerId);
+
+    if (it != m_players.end())
+        return it->second;
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<Player>> GameState::getTeamPlayers(const std::string &teamName) const
+{
+    auto it = m_teams.find(teamName);
+
+    if (it != m_teams.end())
+        return it->second;
+    return {};
+}
+
+std::shared_ptr<MapTile> GameState::getMapTile(const Types::Position &position) const
+{
+    auto it = m_mapTiles.find(position);
+
+    if (it != m_mapTiles.end())
+        return it->second;
+    return nullptr;
+}
+
+std::shared_ptr<Egg> GameState::getEgg(uint32_t id) const
+{
+    auto it = m_eggs.find(id);
+
+    if (it != m_eggs.end())
+        return it->second;
+    return nullptr;
+}
+
 }
