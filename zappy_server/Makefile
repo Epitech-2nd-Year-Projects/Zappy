@@ -17,7 +17,7 @@ SRC_DIR 	=	src/
 OBJ_DIR		=	obj/
 TEST_DIR	=	tests/
 
-RM			?= 	rm -f
+RM			= 	rm -rf
 
 MAIN_SRC	=	$(SRC_DIR)main.c
 MAIN_OBJ	=	$(MAIN_SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
@@ -69,7 +69,7 @@ tests_run: fclean $(NAME_TEST)
 
 clean: tests_clean
 	$(RM) vgcore.*
-	$(RM) $(OBJ_DIR)*.o
+	$(RM) $(OBJ_DIR)
 
 tests_clean:
 	$(RM) $(OBJ_DIR)*.gcno $(OBJ_DIR)*.gcda
