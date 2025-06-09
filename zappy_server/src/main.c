@@ -6,6 +6,8 @@
 */
 
 #include "arguments.h"
+#include "constants.h"
+#include "server.h"
 
 int main(int argc, char **argv)
 {
@@ -13,8 +15,12 @@ int main(int argc, char **argv)
 
     if (!parse_args(argc, argv, &arguments)) {
         free_arguments(&arguments);
-        return 84;
+        return EXIT_ERROR;
+    }
+    if (run_server(&arguments) == EXIT_ERROR) {
+        free_arguments(&arguments);
+        return EXIT_ERROR;
     }
     free_arguments(&arguments);
-    return 0;
+    return EXIT_SUCCESS;
 }
