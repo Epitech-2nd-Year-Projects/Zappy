@@ -28,7 +28,8 @@ SRC 		=	$(SRC_DIR)parser/arguments.c \
 				$(SRC_DIR)parser/handlers/help_handler.c \
 				$(SRC_DIR)parser/handlers/port_handler.c \
 				$(SRC_DIR)parser/handlers/size_handler.c \
-				$(SRC_DIR)parser/handlers/teams_handler.c
+				$(SRC_DIR)parser/handlers/teams_handler.c \
+				$(SRC_DIR)server.c
 
 OBJ			= 	$(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 TEST_SRC	=	$(TEST_DIR)tests.c
@@ -42,6 +43,7 @@ NAME_TEST	=	unit_tests
 all: $(NAME)
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.c | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(OBJ_DIR)%.o:	$(TEST_DIR)%.c	|	$(OBJ_DIR)
