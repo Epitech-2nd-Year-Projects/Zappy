@@ -28,7 +28,7 @@ class Player : public AEntity {
          * @param teamName The team name this player belongs to
          * @param orientation Initial orientation of the player (defaults to NORTH)
          */
-        Player(uint32_t id, Types::Position position,
+        Player(uint32_t id, Types::PlayerId pId, Types::Position position,
                 uint32_t level, std::string &teamName, Types::Orientation orientation = Types::Orientation::NORTH);
         
         /**
@@ -118,6 +118,7 @@ class Player : public AEntity {
         Types::ResourceArray m_inventory;  ///< The player's resource inventory
         std::string m_teamName;           ///< The team name the player belongs to
         uint32_t m_level;                 ///< The player's current level
+        Types::PlayerId m_playerId;       ///< Unique identifier for the player
         uint32_t m_life = 126;            ///< The player's life points, starting at 126
         bool Alive = true;                ///< The player's alive status, initially true
 };

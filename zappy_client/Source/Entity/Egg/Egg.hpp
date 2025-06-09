@@ -28,7 +28,7 @@ class Egg : public AEntity {
          * @param teamName The team name this egg belongs to
          * @param orientation Initial orientation of the egg (defaults to NORTH)
          */
-        Egg(uint32_t id, Types::Position position, std::string &teamName,
+        Egg(uint32_t id, Types::EggId eID, Types::Position position, std::string &teamName,
             Types::Orientation orientation = Types::Orientation::NORTH);
         
         /**
@@ -50,6 +50,7 @@ class Egg : public AEntity {
         
     protected:
         std::string m_teamName; ///< The team name this egg belongs to
+        Types::EggId m_eggId;   ///< Unique identifier for the egg
         bool m_hatched;         ///< Flag indicating if the egg has hatched
 };
 }

@@ -8,10 +8,11 @@
 #include "Entity/Egg/Egg.hpp"
 
 namespace GUI {
-Egg::Egg(uint32_t id, Types::Position position, std::string &teamName,
+Egg::Egg(uint32_t id, Types::EggId eId, Types::Position position, std::string &teamName,
            Types::Orientation orientation)
     : AEntity(id, position, orientation)
     , m_teamName(teamName)
+    , m_eggId(eId)
     , m_hatched(false)
 {
 }
