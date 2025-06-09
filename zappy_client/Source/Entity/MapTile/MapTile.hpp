@@ -29,7 +29,7 @@ class MapTile : public AEntity{
          * @param position Shared pointer to the tile's position coordinates
          * @param orientation Initial orientation of the tile (defaults to NORTH)
          */
-        MapTile(uint32_t id, std::shared_ptr<Types::Position> position,
+        MapTile(uint32_t id, Types::Position position,
                 Types::Orientation orientation = Types::Orientation::NORTH);
         
         /**

@@ -8,9 +8,9 @@
 #include "Entity/MapTile/MapTile.hpp"
 
 namespace GUI {
-MapTile::MapTile(uint32_t id, std::shared_ptr<Types::Position> position,
+MapTile::MapTile(uint32_t id, Types::Position position,
                  Types::Orientation orientation)
-    : AEntity(id, std::move(position), orientation)
+    : AEntity(id, position, orientation)
 {
 }
 
@@ -55,4 +55,5 @@ void MapTile::removeResource(Types::ResourceType resourceType, std::size_t amoun
     } else {
         resourceCount = 0;
     }
+}
 }

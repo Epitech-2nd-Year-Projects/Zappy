@@ -16,5 +16,6 @@ class IEntity {
 
         virtual void setPosition(Types::Position position) = 0;
         virtual void setOrientation(Types::Orientation orientation) = 0;
+        virtual void draw() const = 0;
 };
 }

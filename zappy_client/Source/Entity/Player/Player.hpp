@@ -28,7 +28,7 @@ class Player : public AEntity {
          * @param teamName The team name this player belongs to
          * @param orientation Initial orientation of the player (defaults to NORTH)
          */
-        Player(uint32_t id, std::shared_ptr<Types::Position> position,
+        Player(uint32_t id, Types::Position position,
                 uint32_t level, std::string &teamName, Types::Orientation orientation = Types::Orientation::NORTH);
         
         /**
