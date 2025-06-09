@@ -17,7 +17,7 @@ namespace EventManager {
 class EventBus {
     public:
         template<typename EventType>
-        using Handler = std::function<void(const EventType&)>;
+        using Handler = std::function<void(const EventType &)>;
 
         EventBus() = default;
         ~EventBus() = default;
@@ -28,25 +28,24 @@ class EventBus {
             static_assert(std::is_base_of<IEvent, EventType>::value,
                         "EventType must inehrite from IEvent");
             auto typeId = std::type_index(typeid(EventType));
-            auto wrapper = [handler = std::move(handler)](const IEvent& evt) {
-                handler(static_cast<const EventType&>(evt));
+            auto wrapper = [handler = std::move(handler)](const IEvent &evt) {
+                handler(static_cast<const EventType &>(evt));
             };
             _subscribers[typeId].push_back(wrapper);
         }
 
         template<typename EventType>
-        void publish(const EventType& event) const
+        void publish(const EventType &event) const
         {
             auto it = _subscribers.find(std::type_index(typeid(EventType)));
             if (it != _subscribers.end()) {
-                for (const auto& handler : it->second) {
+                for (const auto &handler : it->second) {
                     handler(event);
                 }
             }
         }
-
     private:
-        using EventHandler = std::function<void(const IEvent&)>;
+        using EventHandler = std::function<void(const IEvent &)>;
         std::unordered_map<std::type_index, std::vector<EventHandler>> _subscribers;
 };
 }
