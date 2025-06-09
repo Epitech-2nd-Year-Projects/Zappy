@@ -28,7 +28,11 @@ static int set_nonblocking(int fd)
     if (flags == ERROR) {
         return ERROR;
     }
-    return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
+        perror("fcntl");
+        return ERROR;
+    }
+    return EXIT_SUCCESS;
 }
 
 static int create_listener_socket(const arguments_t *args, int max_clients)
@@ -56,33 +60,36 @@ static int create_listener_socket(const arguments_t *args, int max_clients)
 
 static void remove_client(server_t *server, int index)
 {
+    if (server->clients[index].team_name != NULL) {
+        free(server->clients[index].team_name);
+    }
     close(server->clients[index].fd);
     server->clients[index] = server->clients[server->clients_count - 1];
     server->pfds[index + 1] = server->pfds[server->clients_count];
     server->clients_count--;
 }
 
-static void accept_clients(server_t *server, time_t now)
+static void accept_clients(server_t *s, time_t now)
 {
-    for (int fd = accept(server->listen_fd, NULL, NULL); fd >= 0;
-        fd = accept(server->listen_fd, NULL, NULL)) {
+    for (int fd = accept(s->listen_fd, NULL, NULL); fd >= 0;
+        fd = accept(s->listen_fd, NULL, NULL)) {
         if (set_nonblocking(fd) < 0) {
-            perror("fcntl");
             close(fd);
             continue;
         }
-        if (server->clients_count >= server->max_clients) {
+        if (s->clients_count >= s->max_clients) {
             close(fd);
             continue;
         }
-        server->clients[server->clients_count] = (client_t){fd, now};
-        server->pfds[server->clients_count + 1].fd = fd;
-        server->pfds[server->clients_count + 1].events = POLLIN;
-        server->clients_count++;
+        s->clients[s->clients_count] = (client_t){fd, now,
+            CLIENT_TYPE_UNKNOWN, NULL, {0}, 0};
+        memset(s->clients[s->clients_count].input_buffer, 0, BUFFER_SIZE);
+        s->pfds[s->clients_count + 1].fd = fd;
+        s->pfds[s->clients_count + 1].events = POLLIN;
+        s->clients_count++;
     }
-    if (errno != EAGAIN && errno != EWOULDBLOCK) {
+    if (errno != EAGAIN && errno != EWOULDBLOCK)
         perror("accept");
-    }
 }
 
 static bool process_client(server_t *server, int index, time_t now)
@@ -141,7 +148,7 @@ static int setup_server(const arguments_t *args, server_t *server)
 
 static bool server_loop(server_t *server)
 {
-    int return_value = poll(server->pfds, server->clients_count, 1000);
+    int return_value = poll(server->pfds, server->clients_count + 1, 1000);
     time_t now = time(NULL);
 
     if (return_value < 0) {
@@ -161,6 +168,9 @@ static bool server_loop(server_t *server)
 static void cleanup_server(server_t *server)
 {
     for (int i = 0; i < server->clients_count; i++) {
+        if (server->clients[i].team_name != NULL) {
+            free(server->clients[i].team_name);
+        }
         close(server->clients[i].fd);
     }
     free(server->clients);
