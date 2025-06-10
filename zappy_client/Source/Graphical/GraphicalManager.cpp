@@ -20,7 +20,9 @@ GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
             {0.0f, 1.0f, 0.0f},
             45.0f,
             CAMERA_PERSPECTIVE)
+, m_mapSize({0, 0})
 {
+    subscribeToEvents();
 }
 
 GraphicalManager::~GraphicalManager()
@@ -38,6 +40,20 @@ void GraphicalManager::render()
         m_camera.EndMode3D();
         m_window.EndDrawing();
     }
+}
+
+void GraphicalManager::subscribeToEvents()
+{
+    m_eventBus.subscribe<EventManager::MapSizeEvent>(
+        [this](const EventManager::MapSizeEvent &event) {
+            initMap(event.width, event.height);
+        }
+    );
+}
+
+void GraphicalManager::initMap(std::size_t width, std::size_t height)
+{
+    m_mapSize = {width, height};
 }
 
 void GraphicalManager::runRender()

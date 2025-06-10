@@ -13,6 +13,7 @@
 #include "Raylib/Graphics/Camera.hpp"
 #include "Graphical/Types/GraphicalTypes.hpp"
 #include "EventManager/EventBus.hpp"
+#include "EventManager/EventType.hpp"
 
 
 namespace GUI {
@@ -33,7 +34,11 @@ private:
     Raylib::Core::Window m_window;
     Raylib::Graphics::Camera m_camera;
 
+    MapSize m_mapSize;
+
     void render();
+    void subscribeToEvents();
+    void initMap(std::size_t width, std::size_t height);
 
     class GraphicalManagerException : public std::exception {
     public:

@@ -11,6 +11,8 @@
 #include <string>
 #include <utility>
 
+namespace GUI {
+
 struct WindowInformation {
     std::string windowName;
     std::size_t windowWidth;
@@ -29,4 +31,4 @@ struct MapSize
     std::size_t width;
     std::size_t height;
 };
-
+}
