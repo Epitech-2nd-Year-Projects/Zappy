@@ -17,6 +17,11 @@ namespace GUI {
      */
     constexpr float TILE_SCALE = 0.001f;
 
+    /**
+     * @brief Default spacing between island of the map
+     */
+    constexpr float TILE_SPACING = 5.0f;
+
 /**
  * @class GraphicalTile
  * @brief Represents the visual, renderable version of a map tile.
@@ -48,13 +53,12 @@ class GraphicalTile : public MapTile {
         ~GraphicalTile();
 
         /**
-         * @brief Gets the Raylib 3D model associated with this tile.
-         * @return A copy of the Raylib Model object.
-         */
-        Raylib::Graphics::Model getModel() const;
+         * @brief Draw the map tile.
+        */
+        void draw() const override;
 
-    protected:
         Raylib::Graphics::Model m_model;    ///< The 3D model used for rendering the tile.
+    protected:
         Vector3 m_graphicPosition;          ///< The position in 3D world coordinates for rendering.
         float m_scale;                      ///< The scale factor applied to the model when drawing.
 };

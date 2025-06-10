@@ -23,5 +23,8 @@ GraphicalTile::~GraphicalTile()
 {
 }
 
-
+void GraphicalTile::draw() const
+{
+    m_model.Draw(m_graphicPosition, m_scale, WHITE);
+}
 }
