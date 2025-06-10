@@ -31,10 +31,20 @@ SRC					=		Source/Main.cpp								\
 							Source/Raylib/Graphics/Texture.cpp			\
 							Source/Raylib/Graphics/Material.cpp			\
 							Source/Raylib/Graphics/Shapes.cpp			\
+							Source/Raylib/Graphics/Model.cpp			\
 							Source/Raylib/UI/Widget.cpp					\
 							Source/Raylib/UI/Label.cpp					\
 							Source/Raylib/UI/Button.cpp					\
-							Source/Raylib/Graphics/Animation.cpp	\
+							Source/Raylib/Graphics/Animation.cpp		\
+							Source/GameState/GameState.cpp				\
+							Source/Entity/AEntity.cpp					\
+							Source/Entity/Player/Player.cpp				\
+							Source/Entity/MapTile/MapTile.cpp			\
+							Source/Entity/Egg/Egg.cpp					\
+							Source/Graphical/GraphicalManager.cpp		\
+							Source/Graphical/Entity/GraphicalTile.cpp	\
+							Source/Graphical/Entity/GraphicalPlayer.cpp	\
+							Source/Graphical/Utils/Map.cpp
 
 NAME				=		zappy_gui
 
