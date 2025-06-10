@@ -20,7 +20,6 @@ GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
             {0.0f, 1.0f, 0.0f},
             45.0f,
             CAMERA_PERSPECTIVE)
-, m_mapSize({0, 0})
 {
     subscribeToEvents();
 }
@@ -53,7 +52,7 @@ void GraphicalManager::subscribeToEvents()
 
 void GraphicalManager::initMap(std::size_t width, std::size_t height)
 {
-    m_mapSize = {width, height};
+    m_map.init(width, height);
 }
 
 void GraphicalManager::runRender()

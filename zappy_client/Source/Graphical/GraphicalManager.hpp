@@ -14,6 +14,8 @@
 #include "Graphical/Types/GraphicalTypes.hpp"
 #include "EventManager/EventBus.hpp"
 #include "EventManager/EventType.hpp"
+#include "Graphical/Entity/GraphicalTile.hpp"
+#include "Graphical/Utils/Map.hpp"
 
 
 namespace GUI {
@@ -34,7 +36,7 @@ private:
     Raylib::Core::Window m_window;
     Raylib::Graphics::Camera m_camera;
 
-    MapSize m_mapSize;
+    Map m_map;
 
     void render();
     void subscribeToEvents();
