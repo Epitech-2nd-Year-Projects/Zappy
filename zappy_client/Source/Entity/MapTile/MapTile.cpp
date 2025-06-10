@@ -45,6 +45,11 @@ void MapTile::addResource(Types::ResourceType resourceType, std::size_t amount)
     }
 }
 
+void MapTile::addResource(Types::ResourceArray resourceArray)
+{
+    m_resources = resourceArray;
+}
+
 void MapTile::removeResource(Types::ResourceType resourceType, std::size_t amount)
 {
     if (resourceType >= Types::ResourceType::COUNT)

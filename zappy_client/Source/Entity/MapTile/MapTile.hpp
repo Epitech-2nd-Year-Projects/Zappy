@@ -62,6 +62,12 @@ class MapTile : public AEntity{
          * @param amount The quantity to add (defaults to 1)
          */
         void addResource(Types::ResourceType resourceType, std::size_t amount = 1);
+
+        /**
+         * @brief Add resources to this tile
+         * @param resourceArray An array with all ressources of this tile
+         */
+        void addResource(Types::ResourceArray resourceArray);
         
         /**
          * @brief Remove a player from this tile
