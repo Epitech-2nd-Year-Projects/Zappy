@@ -59,6 +59,12 @@ class Player : public AEntity {
          * @return The player's life points as an unsigned integer
          */
         uint32_t getLife() const;
+
+        /**
+         * @brief Get the player's unique id
+         * @return The player's unique id as an unsigned integer
+         */
+        Types::PlayerId getPlayerId() const;
         
         /**
          * @brief Check if the player is alive

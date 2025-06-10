@@ -30,6 +30,8 @@ uint32_t Player::getLevel() const { return m_level; }
 
 uint32_t Player::getLife() const { return m_life; }
 
+Types::PlayerId Player::getPlayerId() const { return m_playerId; }
+
 bool Player::isAlive() const { return Alive; }
 
 void Player::setInventory(const Types::ResourceArray &inventory)
