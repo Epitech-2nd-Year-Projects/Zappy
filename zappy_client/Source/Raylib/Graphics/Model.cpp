@@ -11,13 +11,15 @@
 namespace Raylib {
 namespace Graphics {
 
-Model::Model(const std::string &filePath) {
+Model::Model(const std::string &filePath)
+{
     model_ = ::LoadModel(filePath.c_str());
     if (!IsReady())
         throw ModelException("Failed to load model: " + filePath);
 }
 
-Model::Model(const ::Mesh &mesh, const ::Material& material){
+Model::Model(const ::Mesh &mesh, const ::Material& material)
+{
     model_ = ::LoadModelFromMesh(mesh);
     if (!IsReady())
         throw ModelException("Failed to create model from mesh.");
@@ -25,7 +27,8 @@ Model::Model(const ::Mesh &mesh, const ::Material& material){
         model_.materials[0] = material;
 }
 
-Model::~Model() {
+Model::~Model()
+{
     if (IsReady())
         ::UnloadModel(model_);
 }
@@ -40,7 +43,8 @@ void Model::Draw(Vector3 position, Vector3 rotationAxis, float rotationAngle, Ve
     ::DrawModelEx(model_, position, rotationAxis, rotationAngle, scale, tint);
 }
 
-void Model::SetMaterial(const Material &material, int materialIndex) {
+void Model::SetMaterial(const Material &material, int materialIndex)
+{
     if (materialIndex >= 0 && materialIndex < model_.materialCount)
         model_.materials[materialIndex] = material.GetRLMaterial();
 }
