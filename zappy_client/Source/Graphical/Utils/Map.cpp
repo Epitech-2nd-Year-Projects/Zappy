@@ -77,5 +77,4 @@ std::size_t Map::getHeight() const noexcept
 {
     return m_height;
 }
-
 } // namespace GUI

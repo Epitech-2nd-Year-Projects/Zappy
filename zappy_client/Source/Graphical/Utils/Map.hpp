@@ -113,5 +113,4 @@ private:
         std::string message_;
     };
 };
-
 } // namespace GUI
