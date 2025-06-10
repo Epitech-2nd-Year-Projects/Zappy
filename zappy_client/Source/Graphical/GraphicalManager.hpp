@@ -9,14 +9,17 @@
 
 #include <cstdio>
 #include <string>
+#include <map>
+#include <memory>
+#include <utility>
 #include "Raylib/Core/Window.hpp"
 #include "Raylib/Graphics/Camera.hpp"
 #include "Graphical/Types/GraphicalTypes.hpp"
 #include "EventManager/EventBus.hpp"
 #include "EventManager/EventType.hpp"
 #include "Graphical/Entity/GraphicalTile.hpp"
+#include "Graphical/Entity/GraphicalPlayer.hpp"
 #include "Graphical/Utils/Map.hpp"
-
 
 namespace GUI {
 
@@ -37,12 +40,17 @@ private:
     Raylib::Graphics::Camera m_camera;
 
     Map m_map;
+    std::map<std::string, std::vector<std::shared_ptr<GraphicalPlayer>>> m_teams;
 
     void render();
     void subscribeToEvents();
     void subscribeToMapEvents();
+    void subscribeToPlayerEvents();
     void initMap(std::size_t width, std::size_t height);
     void addMapRessources(const EventManager::MapContentEvent &mapContent);
+    void loadTeams(const EventManager::TeamNamesEvent &teams);
+    void loadPlayer(const EventManager::PlayerConnectionEvent &playerInfo);
+    std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {
     public:

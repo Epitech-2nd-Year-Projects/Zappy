@@ -60,6 +60,20 @@ void GraphicalManager::subscribeToMapEvents()
     );
 }
 
+void GraphicalManager::subscribeToPlayerEvents()
+{
+    m_eventBus.subscribe<EventManager::TeamNamesEvent>(
+        [this](const EventManager::TeamNamesEvent &event) {
+            loadTeams(event);
+        }
+    );
+    m_eventBus.subscribe<EventManager::PlayerConnectionEvent>(
+        [this](const EventManager::PlayerConnectionEvent &event) {
+            loadPlayer(event);
+        }
+    );
+}
+
 void GraphicalManager::subscribeToEvents()
 {
     subscribeToMapEvents();
@@ -75,6 +89,33 @@ void GraphicalManager::addMapRessources(const EventManager::MapContentEvent &map
     for (std::size_t i = 0; i < mapContent.positions.size(); ++i) {
         m_map.at(mapContent.positions[i].x, mapContent.positions[i].x).addResource(
             mapContent.resourceArrays[i]);
+    }
+}
+
+std::pair<std::string, std::size_t> GraphicalManager::getPlayerLocation(uint32_t id)
+{
+    for (auto element : m_teams) {
+        for (std::size_t i = 0;  i < element.second.size(); ++i) {
+            if (element.second[i].get()->getPlayerId() == id)
+                return {element.first, i};
+        }
+    }
+}
+
+void GraphicalManager::loadPlayer(const EventManager::PlayerConnectionEvent &playerInfo)
+{
+    Vector3 graphicalPosition = { playerInfo.position.x * TILE_OFFSET, PlAYER_Y_OFFSET,
+        playerInfo.position.y * TILE_OFFSET};
+
+    m_teams[playerInfo.teamName].emplace_back(std::make_shared<GraphicalPlayer>(playerInfo.playerId,
+    playerInfo.playerId, playerInfo.position, playerInfo.level, playerInfo.teamName,
+        "Assets/Player.glb", "Assets/Player.glb", graphicalPosition, playerInfo.orientation));
+}
+
+void GraphicalManager::loadTeams(const EventManager::TeamNamesEvent &teams)
+{
+    for (auto team : teams.teamNames) {
+        m_teams[team];
     }
 }
 
