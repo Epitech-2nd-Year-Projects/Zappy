@@ -53,6 +53,19 @@ class AEntity : public IEntity {
          * @param orientation New orientation direction
          */
         void setOrientation(Types::Orientation orientation) override;
+
+        /**
+         * @brief Get the entity current position
+         * @return The entity current position
+         */
+        Types::Position getPosition() const;
+
+        /**
+         * @brief Get the entity current orientation
+         * @return The entity current orientation
+         */
+        Types::Orientation getOrientation() const;
+
         
     protected:
         uint32_t m_id;              ///< Unique identifier for the entity

@@ -24,4 +24,14 @@ void AEntity::setOrientation(Types::Orientation orientation)
 {
     m_orientation = orientation;
 }
+
+Types::Position AEntity::getPosition() const
+{
+    return m_position;
+}
+
+Types::Orientation AEntity::getOrientation() const
+{
+    return m_orientation;
+}
 }

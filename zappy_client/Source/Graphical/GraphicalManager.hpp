@@ -53,6 +53,8 @@ private:
     void updatePlayerPosition(const EventManager::PlayerMovedEvent &playerMove);
     void updatePlayerLevel(const EventManager::PlayerLevelEvent &playerLevel);
     void updatePlayerInventary(const EventManager::PlayerInventoryEvent &playerInventary);
+    void updatePlayerDrop(const EventManager::PlayerResourceDropEvent &playerDrop);
+    void updatePlayerTake(const EventManager::PlayerResourceTakeEvent &playerTake);
     std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {

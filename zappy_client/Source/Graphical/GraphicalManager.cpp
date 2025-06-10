@@ -87,6 +87,16 @@ void GraphicalManager::subscribeToPlayerEvents()
             updatePlayerInventary(event);
         }
     );
+    m_eventBus.subscribe<EventManager::PlayerResourceDropEvent>(
+        [this](const EventManager::PlayerResourceDropEvent &event) {
+            updatePlayerDrop(event);
+        }
+    );
+    m_eventBus.subscribe<EventManager::PlayerResourceTakeEvent>(
+        [this](const EventManager::PlayerResourceTakeEvent &event) {
+            updatePlayerTake(event);
+        }
+    );
 }
 
 void GraphicalManager::subscribeToEvents()
@@ -157,6 +167,24 @@ void GraphicalManager::updatePlayerInventary(const EventManager::PlayerInventory
 
     m_teams[index.first][index.second].get()->setInventory(playerInventary.inventory);
     m_teams[index.first][index.second].get()->setPosition(playerInventary.position);
+}
+
+void GraphicalManager::updatePlayerDrop(const EventManager::PlayerResourceDropEvent &playerDrop)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerDrop.playerId);
+    Types::Position position = m_teams[index.first][index.second].get()->getPosition();
+
+    m_map.at(position.x, position.y).addResource(playerDrop.resourceType, 1);
+    m_teams[index.first][index.second].get()->removeResource(playerDrop.resourceType, 1);
+}
+
+void GraphicalManager::updatePlayerTake(const EventManager::PlayerResourceTakeEvent &playerTake)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerTake.playerId);
+    Types::Position position = m_teams[index.first][index.second].get()->getPosition();
+
+    m_map.at(position.x, position.y).removeResource(playerTake.resourceType, 1);
+    m_teams[index.first][index.second].get()->addResource(playerTake.resourceType, 1);
 }
 
 void GraphicalManager::runRender()
