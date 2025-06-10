@@ -41,18 +41,41 @@ void GraphicalManager::render()
     }
 }
 
-void GraphicalManager::subscribeToEvents()
+void GraphicalManager::subscribeToMapEvents()
 {
     m_eventBus.subscribe<EventManager::MapSizeEvent>(
         [this](const EventManager::MapSizeEvent &event) {
             initMap(event.width, event.height);
         }
     );
+    m_eventBus.subscribe<EventManager::TileContentEvent>(
+        [this](const EventManager::TileContentEvent &event) {
+            m_map.at(event.position.x, event.position.y).addResource(event.resources);
+        }
+    );
+    m_eventBus.subscribe<EventManager::MapContentEvent>(
+        [this](const EventManager::MapContentEvent &event) {
+            addMapRessources(event);
+        }
+    );
+}
+
+void GraphicalManager::subscribeToEvents()
+{
+    subscribeToMapEvents();
 }
 
 void GraphicalManager::initMap(std::size_t width, std::size_t height)
 {
     m_map.init(width, height);
+}
+
+void GraphicalManager::addMapRessources(const EventManager::MapContentEvent &mapContent)
+{
+    for (std::size_t i = 0; i < mapContent.positions.size(); ++i) {
+        m_map.at(mapContent.positions[i].x, mapContent.positions[i].x).addResource(
+            mapContent.resourceArrays[i]);
+    }
 }
 
 void GraphicalManager::runRender()

@@ -40,7 +40,9 @@ private:
 
     void render();
     void subscribeToEvents();
+    void subscribeToMapEvents();
     void initMap(std::size_t width, std::size_t height);
+    void addMapRessources(const EventManager::MapContentEvent &mapContent);
 
     class GraphicalManagerException : public std::exception {
     public:
