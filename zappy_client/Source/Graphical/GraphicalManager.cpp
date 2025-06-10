@@ -72,11 +72,27 @@ void GraphicalManager::subscribeToPlayerEvents()
             loadPlayer(event);
         }
     );
+    m_eventBus.subscribe<EventManager::PlayerMovedEvent>(
+        [this](const EventManager::PlayerMovedEvent &event) {
+            updatePlayerPosition(event);
+        }
+    );
+    m_eventBus.subscribe<EventManager::PlayerLevelEvent>(
+        [this](const EventManager::PlayerLevelEvent &event) {
+            updatePlayerLevel(event);
+        }
+    );
+    m_eventBus.subscribe<EventManager::PlayerInventoryEvent>(
+        [this](const EventManager::PlayerInventoryEvent &event) {
+            updatePlayerInventary(event);
+        }
+    );
 }
 
 void GraphicalManager::subscribeToEvents()
 {
     subscribeToMapEvents();
+    subscribeToPlayerEvents();
 }
 
 void GraphicalManager::initMap(std::size_t width, std::size_t height)
@@ -100,6 +116,7 @@ std::pair<std::string, std::size_t> GraphicalManager::getPlayerLocation(uint32_t
                 return {element.first, i};
         }
     }
+    return {"", 0};
 }
 
 void GraphicalManager::loadPlayer(const EventManager::PlayerConnectionEvent &playerInfo)
@@ -117,6 +134,29 @@ void GraphicalManager::loadTeams(const EventManager::TeamNamesEvent &teams)
     for (auto team : teams.teamNames) {
         m_teams[team];
     }
+}
+
+void GraphicalManager::updatePlayerPosition(const EventManager::PlayerMovedEvent &playerMove)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerMove.playerId);
+
+    m_teams[index.first][index.second].get()->setPosition(playerMove.newPosition);
+    m_teams[index.first][index.second].get()->setOrientation(playerMove.newOrientation);
+}
+
+void GraphicalManager::updatePlayerLevel(const EventManager::PlayerLevelEvent &playerLevel)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerLevel.playerId);
+
+    m_teams[index.first][index.second].get()->setLevel(playerLevel.newLevel);
+}
+
+void GraphicalManager::updatePlayerInventary(const EventManager::PlayerInventoryEvent &playerInventary)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerInventary.playerId);
+
+    m_teams[index.first][index.second].get()->setInventory(playerInventary.inventory);
+    m_teams[index.first][index.second].get()->setPosition(playerInventary.position);
 }
 
 void GraphicalManager::runRender()

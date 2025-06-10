@@ -50,6 +50,9 @@ private:
     void addMapRessources(const EventManager::MapContentEvent &mapContent);
     void loadTeams(const EventManager::TeamNamesEvent &teams);
     void loadPlayer(const EventManager::PlayerConnectionEvent &playerInfo);
+    void updatePlayerPosition(const EventManager::PlayerMovedEvent &playerMove);
+    void updatePlayerLevel(const EventManager::PlayerLevelEvent &playerLevel);
+    void updatePlayerInventary(const EventManager::PlayerInventoryEvent &playerInventary);
     std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {

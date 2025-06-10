@@ -29,7 +29,7 @@ class Player : public AEntity {
          * @param orientation Initial orientation of the player (defaults to NORTH)
          */
         Player(uint32_t id, Types::PlayerId pId, Types::Position position,
-                uint32_t level, std::string &teamName, Types::Orientation orientation = Types::Orientation::NORTH);
+                uint32_t level, const std::string &teamName, Types::Orientation orientation = Types::Orientation::NORTH);
         
         /**
          * @brief Virtual destructor for the Player class

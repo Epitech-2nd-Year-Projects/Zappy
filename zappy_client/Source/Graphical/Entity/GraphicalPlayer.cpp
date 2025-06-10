@@ -10,7 +10,7 @@
 namespace GUI {
 
 GraphicalPlayer::GraphicalPlayer(uint32_t id, Types::PlayerId pId, Types::Position position,
-                uint32_t level, std::string &teamName, const std::string &modelName,
+                uint32_t level, const std::string &teamName, const std::string &modelName,
                 const std::string &animationName, Vector3 graphicPosition,
                 Types::Orientation orientation)
                 : Player(id, pId, position, level, teamName, orientation)

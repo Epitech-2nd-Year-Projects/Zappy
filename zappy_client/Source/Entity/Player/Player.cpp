@@ -9,7 +9,7 @@
 
 namespace GUI {
 Player::Player(uint32_t id, Types::PlayerId pId, Types::Position position,
-                uint32_t level, std::string &teamName, Types::Orientation orientation)
+                uint32_t level, const std::string &teamName, Types::Orientation orientation)
     : AEntity(id, position, orientation)
     , m_teamName(teamName)
     , m_level(level)

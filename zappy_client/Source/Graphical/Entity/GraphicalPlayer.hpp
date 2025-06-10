@@ -20,7 +20,7 @@ namespace GUI {
 class GraphicalPlayer : public Player {
     public:
         GraphicalPlayer(uint32_t id, Types::PlayerId pId, Types::Position position,
-                uint32_t level, std::string &teamName, const std::string &modelName, const std::string &animationName, 
+                uint32_t level, const std::string &teamName, const std::string &modelName, const std::string &animationName, 
                 Vector3 graphicPosition, Types::Orientation orientation = Types::Orientation::NORTH);
         ~GraphicalPlayer();
 

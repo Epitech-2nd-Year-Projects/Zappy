@@ -43,6 +43,7 @@ SRC					=		Source/Main.cpp								\
 							Source/Entity/Egg/Egg.cpp					\
 							Source/Graphical/GraphicalManager.cpp		\
 							Source/Graphical/Entity/GraphicalTile.cpp	\
+							Source/Graphical/Entity/GraphicalPlayer.cpp	\
 							Source/Graphical/Utils/Map.cpp
 
 NAME				=		zappy_gui
