@@ -62,11 +62,11 @@ bool Model::IsReady() const
 
 ::RayCollision Model::CheckCollisionMesh(const ::Ray &ray) const
 {
-    RayCollision closestCollision = {0};
+    RayCollision closestCollision = {};
     closestCollision.hit = false;
     closestCollision.distance = FLT_MAX;
 
-    for (std::size_t i = 0; i < model_.meshCount; ++i) {
+    for (std::size_t i = 0; i < static_cast<std::size_t>(model_.meshCount); ++i) {
         Mesh mesh = model_.meshes[i];
         RayCollision collision = GetRayCollisionMesh(ray, mesh, model_.transform);
         if (collision.hit && collision.distance < closestCollision.distance) {

@@ -11,12 +11,11 @@
 
 namespace GUI {
 
-GraphicalManager::GraphicalManager()
-: m_windowName("Zappy"),
-  m_windowWidth(DEFAULT_WINDOW_WIDTH),
-  m_windowHeight(DEFAULT_WINDOW_HEIGHT),
-  m_window(m_windowWidth, m_windowHeight, m_windowName),
-  m_camera({10.0f, 0.0f, 0.0f},
+GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
+: m_eventBus(eventBus)
+, m_windowInfo({"Zappy", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT})
+, m_window(m_windowInfo.windowWidth, m_windowInfo.windowHeight, m_windowInfo.windowName)
+, m_camera({10.0f, 0.0f, 0.0f},
             {0.0f, 0.0f, 0.0f},
             {0.0f, 1.0f, 0.0f},
             45.0f,

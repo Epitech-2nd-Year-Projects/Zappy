@@ -11,6 +11,9 @@
 #include <string>
 #include "Raylib/Core/Window.hpp"
 #include "Raylib/Graphics/Camera.hpp"
+#include "Graphical/Types/GraphicalTypes.hpp"
+#include "EventManager/EventBus.hpp"
+
 
 namespace GUI {
 
@@ -19,15 +22,14 @@ namespace GUI {
 
 class GraphicalManager {
 public:
-    GraphicalManager();
+    GraphicalManager(EventManager::EventBus &eventBus);
     ~GraphicalManager();
 
     void runRender();
 
 private:
-    std::string m_windowName;
-    std::size_t m_windowWidth;
-    std::size_t m_windowHeight;
+    EventManager::EventBus m_eventBus;
+    WindowInformation m_windowInfo;
     Raylib::Core::Window m_window;
     Raylib::Graphics::Camera m_camera;
 
