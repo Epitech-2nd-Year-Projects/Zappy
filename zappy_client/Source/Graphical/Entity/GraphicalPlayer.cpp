@@ -59,7 +59,7 @@ void GraphicalPlayer::playIncantationAnimation()
         return;
     for (int i = 0; i < m_animation.GetAnimationCount(); ++i) {
         if (m_animation.GetAnimationName(i) == "Dance_Loop") {
-            m_animation.Play(i, false);
+            m_animation.Play(i, true);
             break;
         }
     }
