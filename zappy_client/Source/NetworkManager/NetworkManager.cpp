@@ -121,6 +121,7 @@ void NetworkManager::tna(std::vector<std::string> &command)
         return;
     }
     event.teamNames = command[1];
+    m_gameState->teamNameCommand(event);
     if (m_debugMode) {
         std::cout << "Team names: " << event.teamNames << std::endl;
     }
@@ -149,6 +150,7 @@ void NetworkManager::pnw(std::vector<std::string> &command)
     event.orientation = orientation;
     event.level = level;
     event.teamName = teamName;
+    m_gameState->playerConnectionCommand(event);
     if (m_debugMode) {
         std::cout << "Player " << playerId << " connected at (" << position.x << ", " << position.y
                   << ") facing " << static_cast<int>(orientation) << ", level: " << level
@@ -179,8 +181,23 @@ void NetworkManager::ppo(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::plv([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::plv(std::vector<std::string> &command)
 {
+    EventManager::PlayerLevelEvent event;
+    Types::PlayerId playerId;
+    Types::PlayerLvl level;
+
+    if (command.size() != 3) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    level = strToInt(command[2]);
+    event.playerId = playerId;
+    event.newLevel = level;
+    m_gameState->playerLevelCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " leveled up to " << level << std::endl;
+    }
 }
 
 void NetworkManager::pin([[maybe_unused]]std::vector<std::string> &command)
