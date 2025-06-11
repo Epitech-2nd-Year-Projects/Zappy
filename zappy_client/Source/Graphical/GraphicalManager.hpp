@@ -43,6 +43,9 @@ private:
     std::map<std::string, std::vector<std::shared_ptr<GraphicalPlayer>>> m_teams;
 
     void render();
+    void renderMap();
+    void renderPlayers();
+
     void subscribeToEvents();
     void subscribeToMapEvents();
     void subscribeToPlayerEvents();

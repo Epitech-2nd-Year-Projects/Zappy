@@ -28,19 +28,6 @@ GraphicalManager::~GraphicalManager()
 {
 }
 
-void GraphicalManager::render()
-{
-    while(!m_window.ShouldClose()) {
-        m_camera.Update(CAMERA_FREE);
-        m_window.BeginDrawing();
-        m_window.ClearBackground(SKYBLUE);
-        m_camera.BeginMode3D();
-        Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
-        m_camera.EndMode3D();
-        m_window.EndDrawing();
-    }
-}
-
 void GraphicalManager::subscribeToMapEvents()
 {
     m_eventBus.subscribe<EventManager::MapSizeEvent>(
@@ -190,6 +177,28 @@ void GraphicalManager::updatePlayerTake(const EventManager::PlayerResourceTakeEv
 void GraphicalManager::runRender()
 {
     render();
+}
+
+void GraphicalManager::render()
+{
+    while(!m_window.ShouldClose()) {
+        m_camera.Update(CAMERA_FREE);
+        m_window.BeginDrawing();
+        m_window.ClearBackground(SKYBLUE);
+        m_camera.BeginMode3D();
+        Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
+        m_camera.EndMode3D();
+        m_window.EndDrawing();
+    }
+}
+
+void GraphicalManager::renderMap()
+{
+    for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
+        for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
+            m_map.at(x, y).draw();
+        }
+    }
 }
 
 }
