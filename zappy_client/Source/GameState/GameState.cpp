@@ -129,6 +129,18 @@ void GameState::playerExpulsionCommand(const EventManager::PlayerExpulsionEvent 
     m_eventBus.publish(event);
 }
 
+void GameState::playerBroadcastCommand(const EventManager::PlayerBroadcastEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_players.find(event.senderId);
+
+    if (it == m_players.end() || !it->second) {
+        std::cerr << "Player with ID " << event.senderId << " not found in game state." << std::endl;
+        return;
+    }
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);

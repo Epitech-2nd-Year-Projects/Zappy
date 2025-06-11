@@ -242,8 +242,19 @@ void NetworkManager::pex(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pbc([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pbc(std::vector<std::string> &command)
 {
+    EventManager::PlayerBroadcastEvent event;
+
+    if (command.size() != 3) {
+        return;
+    }
+    event.senderId = strToInt(command[1]);
+    event.message = command[2];
+    m_gameState->playerBroadcastCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.senderId << " broadcasted: " << event.message << std::endl;
+    }
 }
 
 void NetworkManager::pic([[maybe_unused]]std::vector<std::string> &command)

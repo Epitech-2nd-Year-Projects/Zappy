@@ -34,6 +34,7 @@ class GameState {
         void playerLevelCommand(const EventManager::PlayerLevelEvent &event);
         void playerInventoryCommand(const EventManager::PlayerInventoryEvent &event);
         void playerExpulsionCommand(const EventManager::PlayerExpulsionEvent &event);
+        void playerBroadcastCommand(const EventManager::PlayerBroadcastEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;

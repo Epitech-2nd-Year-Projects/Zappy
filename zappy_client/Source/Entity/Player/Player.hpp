@@ -30,11 +30,11 @@ class Player : public AEntity {
          */
         Player(uint32_t id, Types::PlayerId pId, Types::Position position,
                 uint32_t level, const std::string &teamName, Types::Orientation orientation = Types::Orientation::NORTH);
-        
+
         /**
          * @brief Virtual destructor for the Player class
          */
-        ~Player() = 0;
+        ~Player();
 
         /**
          * @brief Get the player's current inventory
