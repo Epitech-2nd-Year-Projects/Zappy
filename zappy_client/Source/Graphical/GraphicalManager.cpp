@@ -214,8 +214,13 @@ void GraphicalManager::renderResource(std::size_t x, std::size_t y)
     for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
         if (m_map.at(x, y).getResources()[i] > 0) {
             auto resourceType = static_cast<Types::ResourceType>(i);
-            m_resource.at(resourceType).Draw({(float)(position.x + (i * 0.15)),
-                position.y, (float)(position.z + (i * 0.15))}, 0.1f, WHITE);
+            if (i % 2 == 1) {
+            m_resource.at(resourceType).Draw({(float)(position.x + ((i * 0.1) + 0.2)),
+                position.y, (float)(position.z + -0.65)}, 0.1f, WHITE);
+            } else {
+                m_resource.at(resourceType).Draw({(float)(position.x + ((i * 0.1) + 0.25)),
+                position.y, (float)(position.z + -0.85)}, 0.1f, WHITE);
+            }
         }
     }
 }
