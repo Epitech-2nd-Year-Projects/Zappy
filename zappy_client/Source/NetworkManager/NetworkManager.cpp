@@ -257,8 +257,31 @@ void NetworkManager::pbc(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pic([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pic(std::vector<std::string> &command)
 {
+    EventManager::IncantationStartEvent event;
+    Types::Position position;
+    Types::PlayerLvl level;
+
+    if (command.size() < 5) {
+        return;
+    }
+    position.x = strToInt(command[1]);
+    position.y = strToInt(command[2]);
+    level = strToInt(command[3]);
+    for (size_t i = 4; i < command.size(); ++i) {
+        event.participants.push_back(strToInt(command[i]));
+    }
+    event.position = position;
+    m_gameState->IncantationStartCommand(event);
+    if (m_debugMode) {
+        std::cout << "Incantation started at (" << position.x << ", " << position.y
+                  << ") for level " << level << " with participants: ";
+        for (const auto &participant : event.participants) {
+            std::cout << participant << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 void NetworkManager::pie([[maybe_unused]]std::vector<std::string> &command)
