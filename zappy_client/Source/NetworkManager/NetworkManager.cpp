@@ -284,8 +284,16 @@ void NetworkManager::pic(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pie([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pie(std::vector<std::string> &command)
 {
+    EventManager::IncantationEndEvent event;
+
+    if (command.size() != 4) {
+        return;
+    }
+    event.position.x = strToInt(command[1]);
+    event.position.y = strToInt(command[2]);
+    event.result = strToInt(command[3]) != 0;
 }
 
 void NetworkManager::pfk([[maybe_unused]]std::vector<std::string> &command)
