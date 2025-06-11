@@ -273,7 +273,7 @@ void NetworkManager::pic(std::vector<std::string> &command)
         event.participants.push_back(strToInt(command[i]));
     }
     event.position = position;
-    m_gameState->IncantationStartCommand(event);
+    m_gameState->incantationStartCommand(event);
     if (m_debugMode) {
         std::cout << "Incantation started at (" << position.x << ", " << position.y
                   << ") for level " << level << " with participants: ";
@@ -294,10 +294,25 @@ void NetworkManager::pie(std::vector<std::string> &command)
     event.position.x = strToInt(command[1]);
     event.position.y = strToInt(command[2]);
     event.result = strToInt(command[3]) != 0;
+    m_gameState->incantationEndCommand(event);
+    if (m_debugMode) {
+        std::cout << "Incantation ended at (" << event.position.x << ", " << event.position.y
+                  << ") with result: " << (event.result ? "success" : "failure") << std::endl;
+    }
 }
 
-void NetworkManager::pfk([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pfk(std::vector<std::string> &command)
 {
+    EventManager::PlayerForkEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerForkCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.playerId << " has forked" << std::endl;
+    }
 }
 
 void NetworkManager::pdr([[maybe_unused]]std::vector<std::string> &command)

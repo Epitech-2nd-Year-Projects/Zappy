@@ -141,17 +141,29 @@ void GameState::playerBroadcastCommand(const EventManager::PlayerBroadcastEvent 
     m_eventBus.publish(event);
 }
 
-void GameState::IncantationStartCommand(const EventManager::IncantationStartEvent &event)
+void GameState::incantationStartCommand(const EventManager::IncantationStartEvent &event)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
     m_eventBus.publish(event);
 }
 
-void GameState::IncantationEndCommand(const EventManager::IncantationEndEvent &event)
+void GameState::incantationEndCommand(const EventManager::IncantationEndEvent &event)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
+    m_eventBus.publish(event);
+}
+
+void GameState::playerForkCommand(const EventManager::PlayerForkEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_players.find(event.playerId);
+
+    if (it == m_players.end() || !it->second) {
+        std::cerr << "Player with ID " << event.playerId << " not found in game state." << std::endl;
+        return;
+    }
     m_eventBus.publish(event);
 }
 

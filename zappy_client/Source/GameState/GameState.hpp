@@ -35,8 +35,9 @@ class GameState {
         void playerInventoryCommand(const EventManager::PlayerInventoryEvent &event);
         void playerExpulsionCommand(const EventManager::PlayerExpulsionEvent &event);
         void playerBroadcastCommand(const EventManager::PlayerBroadcastEvent &event);
-        void IncantationStartCommand(const EventManager::IncantationStartEvent &event);
-        void IncantationEndCommand(const EventManager::IncantationEndEvent &event);
+        void incantationStartCommand(const EventManager::IncantationStartEvent &event);
+        void incantationEndCommand(const EventManager::IncantationEndEvent &event);
+        void playerForkCommand(const EventManager::PlayerForkEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;
