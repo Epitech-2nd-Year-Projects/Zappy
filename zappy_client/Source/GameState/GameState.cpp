@@ -54,6 +54,21 @@ void GameState::mapSizeCommand(const EventManager::MapSizeEvent &event)
     m_eventBus.publish(event);
 }
 
+void GameState::tileContentCommand(const EventManager::TileContentEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_mapTiles.find(event.position);
+
+    if (it == m_mapTiles.end() || !it->second) {
+        std::cerr << "Tile at position (" << event.position.x << ", " << event.position.y
+                  << ") not found in game state." << std::endl;
+        return;
+    }
+    auto &tile = it->second;
+    tile->setResource(event.resources);
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);
