@@ -76,8 +76,17 @@ uint32_t NetworkManager::strToInt(const std::string &str) const
     }
 }
 
-void NetworkManager::msz([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::msz(std::vector<std::string> &command)
 {
+    EventManager::MapSizeEvent event;
+
+    if (command.size() < 3)
+        return;
+    event.width = strToInt(command[1]);
+    event.height = strToInt(command[2]);
+    if (m_debugMode) {
+        std::cout << "Map size: " << event.width << "x" << event.height << std::endl;
+    }
 }
 
 void NetworkManager::bct([[maybe_unused]]std::vector<std::string> &command)
@@ -92,7 +101,7 @@ void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
 {
 }
 
-void NetworkManager::ppo([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::ppo(std::vector<std::string> &command)
 {
     Types::PlayerId playerId;
     Types::Position position;

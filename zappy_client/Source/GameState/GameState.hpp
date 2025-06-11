@@ -27,6 +27,7 @@ class GameState {
         ~GameState();
 
         void playerMovedCommand(const EventManager::PlayerMovedEvent &event);
+        void mapSizeCommand(const EventManager::MapSizeEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;
@@ -41,5 +42,7 @@ class GameState {
         std::unordered_map<std::string, std::vector<std::shared_ptr<Player>>> m_teams;
         std::unordered_map<uint32_t, std::shared_ptr<Egg>> m_eggs;
         std::map<Types::Position, std::shared_ptr<MapTile>> m_mapTiles;
+        bool m_mapCreated = false;
+        int m_nextEntityId = 0;
 };
 }
