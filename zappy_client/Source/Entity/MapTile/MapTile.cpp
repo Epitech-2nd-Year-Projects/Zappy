@@ -11,6 +11,7 @@ namespace GUI {
 MapTile::MapTile(uint32_t id, Types::Position position,
                  Types::Orientation orientation)
     : AEntity(id, position, orientation)
+    , m_resources{}
 {
 }
 
