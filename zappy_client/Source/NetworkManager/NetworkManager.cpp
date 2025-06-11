@@ -21,7 +21,7 @@ namespace Network {
 NetworkManager::NetworkManager(std::shared_ptr<GameState> gameState, const std::string &ip, const int port, bool debugMode)
     : m_ip(ip), m_port(port), m_debugMode(debugMode), m_connected(false), m_gameState(std::move(gameState))
 {
-    m_functions["mszx"] = [this](std::vector<std::string> &msg) {msz(msg);};
+    m_functions["msz"] = [this](std::vector<std::string> &msg) {msz(msg);};
     m_functions["bct"] = [this](std::vector<std::string> &msg) {bct(msg);};
     m_functions["tna"] = [this](std::vector<std::string> &msg) {tna(msg);};
 
@@ -76,12 +76,41 @@ uint32_t NetworkManager::strToInt(const std::string &str) const
     }
 }
 
-void NetworkManager::msz([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::msz(std::vector<std::string> &command)
 {
+    EventManager::MapSizeEvent event;
+
+    if (command.size() < 3)
+        return;
+    event.width = strToInt(command[1]);
+    event.height = strToInt(command[2]);
+    m_gameState->mapSizeCommand(event);
+    if (m_debugMode) {
+        std::cout << "Map size: " << event.width << "x" << event.height << std::endl;
+    }
 }
 
-void NetworkManager::bct([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::bct(std::vector<std::string> &command)
 {
+    EventManager::TileContentEvent event;
+    Types::Position position;
+
+    if (command.size() < 10)
+        return;
+    position.x = strToInt(command[1]);
+    position.y = strToInt(command[2]);
+    event.position = position;
+    for (size_t i = 3; i < command.size(); ++i) {
+        event.resources[i - 3] = strToInt(command[i]);
+    }
+    m_gameState->tileContentCommand(event);
+    if (m_debugMode) {
+        std::cout << "Tile at (" << position.x << ", " << position.y << ") has resources: ";
+        for (const auto &res : event.resources) {
+            std::cout << res << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 void NetworkManager::tna([[maybe_unused]]std::vector<std::string> &command)
@@ -92,7 +121,7 @@ void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
 {
 }
 
-void NetworkManager::ppo([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::ppo(std::vector<std::string> &command)
 {
     Types::PlayerId playerId;
     Types::Position position;
@@ -283,16 +312,22 @@ bool NetworkManager::isEndOfMessage(const std::string &message)
     return false;
 }
 
-std::vector<std::string> NetworkManager::splitByNewline(const std::string& input)
+std::vector<std::string> NetworkManager::splitByWord(const std::string &input)
 {
-    std::vector<std::string> lines;
-    std::istringstream stream(input);
-    std::string line;
-
-    while (std::getline(stream, line)) {
-        lines.push_back(line);
+    std::vector<std::string> words;
+    size_t start = 0;
+    size_t end = 0;
+    
+    while ((start = input.find_first_not_of(" \n", end)) != std::string::npos) {
+        end = input.find_first_of(" \n", start);
+        if (end == std::string::npos) {
+            words.push_back(input.substr(start));
+            break;
+        } else {
+            words.push_back(input.substr(start, end - start));
+        }
     }
-    return lines;
+    return words;
 }
 
 void NetworkManager::runCommands()
@@ -302,7 +337,7 @@ void NetworkManager::runCommands()
     while (!m_messageQueue.empty()) {
         std::string message = m_messageQueue.front();
         m_messageQueue.pop();
-        commands = splitByNewline(message);
+        commands = splitByWord(message);
         for (const auto &function : m_functions) {
             if (commands[0] != function.first)
                 continue;    

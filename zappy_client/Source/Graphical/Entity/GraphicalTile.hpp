@@ -55,7 +55,7 @@ class GraphicalTile : public MapTile {
         /**
          * @brief Draw the map tile.
         */
-        void draw() const override;
+        void draw() const;
 
         Raylib::Graphics::Model m_model;    ///< The 3D model used for rendering the tile.
     protected:

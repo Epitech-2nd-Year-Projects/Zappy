@@ -45,7 +45,7 @@ void MapTile::addResource(Types::ResourceType resourceType, std::size_t amount)
     }
 }
 
-void MapTile::addResource(Types::ResourceArray resourceArray)
+void MapTile::setResource(Types::ResourceArray resourceArray)
 {
     m_resources = resourceArray;
 }
