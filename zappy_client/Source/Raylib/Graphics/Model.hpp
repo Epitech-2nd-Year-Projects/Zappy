@@ -38,8 +38,6 @@ public:
      */
     ~Model();
 
-    Model &operator=(const Model&) = delete;
-
     /**
      * @brief Draws the model at a specific position with a uniform scale and tint.
      * @param position The world position to draw the model.

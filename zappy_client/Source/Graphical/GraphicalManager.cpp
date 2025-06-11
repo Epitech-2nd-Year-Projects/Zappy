@@ -22,6 +22,7 @@ GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
             CAMERA_PERSPECTIVE)
 {
     subscribeToEvents();
+    initResourceMap();
 }
 
 GraphicalManager::~GraphicalManager()
@@ -178,6 +179,24 @@ void GraphicalManager::updatePlayerTake(const EventManager::PlayerResourceTakeEv
 void GraphicalManager::runRender()
 {
     render();
+}
+
+void GraphicalManager::initResourceMap()
+{
+    m_resource.insert_or_assign(Types::ResourceType::FOOD,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/food.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::LINEMATE,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/limenate.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::DERAUMERE,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/deraumere.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::SIBUR,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/sibur.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::MENDIANE,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/mendiane.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::PHIRAS,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/phiras.obj"));
+    m_resource.insert_or_assign(Types::ResourceType::THYSTAME,
+        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/thystame.obj"));
 }
 
 void GraphicalManager::render()

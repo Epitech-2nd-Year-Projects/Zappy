@@ -41,10 +41,12 @@ private:
 
     Map m_map;
     std::map<std::string, std::vector<std::shared_ptr<GraphicalPlayer>>> m_teams;
+    std::map<Types::ResourceType, Raylib::Graphics::Model> m_resource;
 
     void render();
     void renderMap();
     void renderPlayers();
+    void initResourceMap();
 
     void subscribeToEvents();
     void subscribeToMapEvents();
