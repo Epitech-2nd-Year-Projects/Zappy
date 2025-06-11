@@ -36,13 +36,5 @@ class IEntity {
          * @param orientation New orientation direction
          */
         virtual void setOrientation(Types::Orientation orientation) = 0;
-        
-        /**
-         * @brief Render the entity in the game world
-         * 
-         * This method is responsible for drawing the entity
-         * at its current position and orientation.
-         */
-        virtual void draw() const = 0;
 };
 }

@@ -56,7 +56,7 @@ class GraphicalPlayer : public Player {
          * @brief Renders the player's 3D model in the game world.
          * @note This method overrides the pure virtual `draw()` from the IEntity interface.
          */
-        void draw() const override;
+        void draw() const;
 
         Raylib::Graphics::Model m_model; ///< The 3D model for the player.
         Raylib::Graphics::Animation
