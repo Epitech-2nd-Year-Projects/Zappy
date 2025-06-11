@@ -47,6 +47,8 @@ private:
     void renderMap();
     void renderPlayers();
     void initResourceMap();
+    void renderResource(std::size_t x, std::size_t y);
+    void renderMapResources();
 
     void subscribeToEvents();
     void subscribeToMapEvents();

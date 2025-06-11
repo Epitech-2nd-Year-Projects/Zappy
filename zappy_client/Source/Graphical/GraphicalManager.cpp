@@ -183,20 +183,41 @@ void GraphicalManager::runRender()
 
 void GraphicalManager::initResourceMap()
 {
-    m_resource.insert_or_assign(Types::ResourceType::FOOD,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/food.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::LINEMATE,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/limenate.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::DERAUMERE,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/deraumere.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::SIBUR,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/sibur.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::MENDIANE,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/mendiane.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::PHIRAS,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/phiras.obj"));
-    m_resource.insert_or_assign(Types::ResourceType::THYSTAME,
-        Raylib::Graphics::Model("Source/Graphical/Assets/Resources/thystame.obj"));
+    m_resource.emplace(Types::ResourceType::FOOD,
+        "Source/Graphical/Assets/Resources/food.obj");
+    m_resource.emplace(Types::ResourceType::LINEMATE,
+        "Source/Graphical/Assets/Resources/linemate.obj");
+    m_resource.emplace(Types::ResourceType::DERAUMERE,
+        "Source/Graphical/Assets/Resources/deraumere.obj");
+    m_resource.emplace(Types::ResourceType::SIBUR,
+        "Source/Graphical/Assets/Resources/sibur.obj");
+    m_resource.emplace(Types::ResourceType::MENDIANE,
+        "Source/Graphical/Assets/Resources/mendiane.obj");
+    m_resource.emplace(Types::ResourceType::PHIRAS,
+        "Source/Graphical/Assets/Resources/phiras.obj");
+    m_resource.emplace(Types::ResourceType::THYSTAME,
+        "Source/Graphical/Assets/Resources/thystame.obj");
+}
+void GraphicalManager::renderMapResources()
+{
+    for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
+        for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
+            renderResource(x, y);
+        }
+    }
+}
+
+void GraphicalManager::renderResource(std::size_t x, std::size_t y)
+{
+    Vector3 position = m_map.at(x, y).getGraphicalPosition();
+
+    for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
+        if (m_map.at(x, y).getResources()[i] > 0) {
+            auto resourceType = static_cast<Types::ResourceType>(i);
+            m_resource.at(resourceType).Draw({(float)(position.x + (i * 0.15)),
+                position.y, (float)(position.z + (i * 0.15))}, 0.1f, WHITE);
+        }
+    }
 }
 
 void GraphicalManager::render()
@@ -208,12 +229,12 @@ void GraphicalManager::render()
         m_camera.BeginMode3D();
         renderMap();
         renderPlayers();
+        renderMapResources();
         //Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
         m_camera.EndMode3D();
         m_window.EndDrawing();
     }
 }
-
 void GraphicalManager::renderMap()
 {
     for (std::size_t x = 0; x < m_map.getWidth(); ++x) {

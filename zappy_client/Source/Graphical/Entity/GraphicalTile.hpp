@@ -57,6 +57,8 @@ class GraphicalTile : public MapTile {
         */
         void draw() const override;
 
+        Vector3 getGraphicalPosition() const;
+
         Raylib::Graphics::Model m_model;    ///< The 3D model used for rendering the tile.
     protected:
         Vector3 m_graphicPosition;          ///< The position in 3D world coordinates for rendering.
