@@ -141,9 +141,7 @@ void GraphicalManager::loadPlayer(const EventManager::PlayerConnectionEvent &pla
 
 void GraphicalManager::loadTeams(const EventManager::TeamNamesEvent &teams)
 {
-    for (auto team : teams.teamNames) {
-        m_teams[team];
-    }
+    m_teams[teams.teamNames];
 }
 
 void GraphicalManager::updatePlayerPosition(const EventManager::PlayerMovedEvent &playerMove)

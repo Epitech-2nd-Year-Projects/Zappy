@@ -69,6 +69,16 @@ void GameState::tileContentCommand(const EventManager::TileContentEvent &event)
     m_eventBus.publish(event);
 }
 
+void GameState::teamNameCommand(const EventManager::TeamNamesEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (m_teams.find(event.teamNames) != m_teams.end())
+        return;
+    m_teams[event.teamNames] = {};
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);

@@ -46,7 +46,7 @@ struct MapContentEvent : public IEvent {
  * @details Triggered when the server sends names of all teams
  */
 struct TeamNamesEvent : public IEvent {
-    std::vector<std::string> teamNames; ///< List of all team names
+    std::string teamNames; ///< Team names
 };
 
 // Player Events

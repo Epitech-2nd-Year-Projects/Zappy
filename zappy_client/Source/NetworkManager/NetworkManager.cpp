@@ -113,8 +113,17 @@ void NetworkManager::bct(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::tna([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::tna(std::vector<std::string> &command)
 {
+    EventManager::TeamNamesEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.teamNames = command[1];
+    if (m_debugMode) {
+        std::cout << "Team names: " << event.teamNames << std::endl;
+    }
 }
 
 void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
