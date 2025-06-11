@@ -47,7 +47,9 @@ void GameState::mapSizeCommand(const EventManager::MapSizeEvent &event)
     for (uint32_t x = 0; x < event.width; ++x) {
         for (uint32_t y = 0; y < event.height; ++y) {
             Types::Position position(x, y);
-            m_mapTiles[position] = std::make_shared<MapTile>(m_nextEntityId++, position);
+            auto tile = std::make_shared<MapTile>(m_nextEntityId++, position);
+            m_mapTiles[position] = tile;
+            m_entities[tile->getId()] = tile;
         }
     }
     m_mapCreated = true;
@@ -76,6 +78,18 @@ void GameState::teamNameCommand(const EventManager::TeamNamesEvent &event)
     if (m_teams.find(event.teamNames) != m_teams.end())
         return;
     m_teams[event.teamNames] = {};
+    m_eventBus.publish(event);
+}
+
+void GameState::playerConnectionCommand(const EventManager::PlayerConnectionEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto player = std::make_shared<Player>(m_nextEntityId++, event.playerId, event.position,
+                                           event.level, event.teamName, event.orientation);
+
+    m_entities[player->getId()] = player;
+    m_players[event.playerId] = player;
+    m_teams[event.teamName].push_back(player);
     m_eventBus.publish(event);
 }
 

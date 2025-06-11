@@ -30,6 +30,7 @@ class GameState {
         void mapSizeCommand(const EventManager::MapSizeEvent &event);
         void tileContentCommand(const EventManager::TileContentEvent &event);
         void teamNameCommand(const EventManager::TeamNamesEvent &event);
+        void playerConnectionCommand(const EventManager::PlayerConnectionEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;

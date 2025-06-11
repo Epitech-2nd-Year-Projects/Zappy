@@ -126,8 +126,34 @@ void NetworkManager::tna(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pnw(std::vector<std::string> &command)
 {
+    EventManager::PlayerConnectionEvent event;
+    Types::PlayerId playerId;
+    Types::Position position;
+    Types::Orientation orientation;
+    Types::PlayerLvl level;
+    std::string teamName;
+
+    if (command.size() != 7) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    position.x = strToInt(command[2]);
+    position.y = strToInt(command[3]);
+    orientation = static_cast<Types::Orientation>(strToInt(command[4]));
+    level = strToInt(command[5]);
+    teamName = command[6];
+    event.playerId = playerId;
+    event.position = position;
+    event.orientation = orientation;
+    event.level = level;
+    event.teamName = teamName;
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " connected at (" << position.x << ", " << position.y
+                  << ") facing " << static_cast<int>(orientation) << ", level: " << level
+                  << ", team: " << teamName << std::endl;
+    }
 }
 
 void NetworkManager::ppo(std::vector<std::string> &command)

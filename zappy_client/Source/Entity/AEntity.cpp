@@ -34,4 +34,9 @@ Types::Orientation AEntity::getOrientation() const
 {
     return m_orientation;
 }
+
+uint32_t AEntity::getId() const
+{
+    return m_id;
+}
 }
