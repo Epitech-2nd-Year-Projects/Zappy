@@ -253,6 +253,7 @@ void GraphicalManager::renderPlayers()
 {
     for (auto team : m_teams) {
         for (auto player : team.second) {
+            player.get()->update();
             player.get()->draw();
         }
     }

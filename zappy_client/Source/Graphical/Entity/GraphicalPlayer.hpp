@@ -14,7 +14,7 @@
 namespace GUI {
 
 constexpr float PLAYER_SCALE = 0.35f;
-constexpr float PlAYER_Y_OFFSET = 0.0f;
+constexpr float PlAYER_Y_OFFSET = -0.1f;
 constexpr float TILE_OFFSET = 5.4f;
 
 /**
@@ -53,10 +53,27 @@ class GraphicalPlayer : public Player {
         ~GraphicalPlayer();
 
         /**
+         * @brief Updates the player's internal state, like animations.
+         * This should be called once per frame, before drawing.
+         */
+        void update();
+
+        /**
          * @brief Renders the player's 3D model in the game world.
          * @note This method overrides the pure virtual `draw()` from the IEntity interface.
          */
         void draw() const override;
+
+        /**
+         * @brief Sets the player's animation to the default idle loop.
+         */
+        void playIdleAnimation();
+
+        /**
+         * @brief Plays the incantation animation (dance) as a one-shot.
+         * The player will return to the idle animation upon completion.
+         */
+        void playIncantationAnimation();
 
         Raylib::Graphics::Model m_model; ///< The 3D model for the player.
         Raylib::Graphics::Animation
