@@ -15,7 +15,7 @@ namespace GUI {
 
 constexpr float PLAYER_SCALE = 0.35f;
 constexpr float PlAYER_Y_OFFSET = 0.0f;
-constexpr float TILE_OFFSET = 5.0f;
+constexpr float TILE_OFFSET = 5.4f;
 
 /**
  * @class GraphicalPlayer

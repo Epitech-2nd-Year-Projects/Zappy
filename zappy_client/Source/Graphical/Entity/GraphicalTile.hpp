@@ -20,7 +20,7 @@ namespace GUI {
     /**
      * @brief Default spacing between island of the map
      */
-    constexpr float TILE_SPACING = 5.0f;
+    constexpr float TILE_SPACING = 5.5f;
 
 /**
  * @class GraphicalTile

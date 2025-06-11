@@ -15,7 +15,7 @@ GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
 : m_eventBus(eventBus)
 , m_windowInfo({"Zappy", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT})
 , m_window(m_windowInfo.windowWidth, m_windowInfo.windowHeight, m_windowInfo.windowName)
-, m_camera({10.0f, 0.0f, 0.0f},
+, m_camera({10.0f, 6.0f, 10.0f},
             {0.0f, 0.0f, 0.0f},
             {0.0f, 1.0f, 0.0f},
             45.0f,
@@ -118,12 +118,13 @@ std::pair<std::string, std::size_t> GraphicalManager::getPlayerLocation(uint32_t
 
 void GraphicalManager::loadPlayer(const EventManager::PlayerConnectionEvent &playerInfo)
 {
+    std::string filePath = "Source/Graphical/Assets/Player.glb";
     Vector3 graphicalPosition = { playerInfo.position.x * TILE_OFFSET, PlAYER_Y_OFFSET,
         playerInfo.position.y * TILE_OFFSET};
 
     m_teams[playerInfo.teamName].emplace_back(std::make_shared<GraphicalPlayer>(playerInfo.playerId,
     playerInfo.playerId, playerInfo.position, playerInfo.level, playerInfo.teamName,
-        "Assets/Player.glb", "Assets/Player.glb", graphicalPosition, playerInfo.orientation));
+        filePath, filePath, graphicalPosition, playerInfo.orientation));
 }
 
 void GraphicalManager::loadTeams(const EventManager::TeamNamesEvent &teams)
@@ -186,7 +187,9 @@ void GraphicalManager::render()
         m_window.BeginDrawing();
         m_window.ClearBackground(SKYBLUE);
         m_camera.BeginMode3D();
-        Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
+        renderMap();
+        renderPlayers();
+        //Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
         m_camera.EndMode3D();
         m_window.EndDrawing();
     }
@@ -201,4 +204,12 @@ void GraphicalManager::renderMap()
     }
 }
 
+void GraphicalManager::renderPlayers()
+{
+    for (auto team : m_teams) {
+        for (auto player : team.second) {
+            player.get()->draw();
+        }
+    }
+}
 }
