@@ -228,8 +228,18 @@ void NetworkManager::pin(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pex([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pex(std::vector<std::string> &command)
 {
+    EventManager::PlayerExpulsionEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerExpulsionCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.playerId << " has been expelled" << std::endl;
+    }
 }
 
 void NetworkManager::pbc([[maybe_unused]]std::vector<std::string> &command)

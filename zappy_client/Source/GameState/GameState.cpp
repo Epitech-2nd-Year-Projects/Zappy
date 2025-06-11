@@ -122,6 +122,13 @@ void GameState::playerInventoryCommand(const EventManager::PlayerInventoryEvent 
     m_eventBus.publish(event);
 }
 
+void GameState::playerExpulsionCommand(const EventManager::PlayerExpulsionEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);
