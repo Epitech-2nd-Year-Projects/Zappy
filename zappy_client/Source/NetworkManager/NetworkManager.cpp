@@ -200,8 +200,32 @@ void NetworkManager::plv(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::pin([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pin(std::vector<std::string> &command)
 {
+    EventManager::PlayerInventoryEvent event;
+    Types::PlayerId playerId;
+    Types::ResourceArray inventory;
+
+    if (command.size() != 11) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    event.playerId = playerId;
+    event.position.x = strToInt(command[2]);
+    event.position.y = strToInt(command[3]);
+    for (size_t i = 0; i < 8; ++i) {
+        inventory[i] = strToInt(command[i + 4]);
+    }
+    event.inventory = inventory;
+    m_gameState->playerInventoryCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " inventory at (" << event.position.x << ", "
+                  << event.position.y << "): ";
+        for (const auto &res : inventory) {
+            std::cout << res << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 void NetworkManager::pex([[maybe_unused]]std::vector<std::string> &command)

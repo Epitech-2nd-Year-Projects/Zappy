@@ -107,6 +107,21 @@ void GameState::playerLevelCommand(const EventManager::PlayerLevelEvent &event)
     m_eventBus.publish(event);
 }
 
+void GameState::playerInventoryCommand(const EventManager::PlayerInventoryEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_players.find(event.playerId);
+
+    if (it == m_players.end() || !it->second) {
+        std::cerr << "Player with ID " << event.playerId << " not found in game state." << std::endl;
+        return;
+    }
+    auto &player = it->second;
+    player->setInventory(event.inventory);
+    player->setPosition(event.position);
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);
