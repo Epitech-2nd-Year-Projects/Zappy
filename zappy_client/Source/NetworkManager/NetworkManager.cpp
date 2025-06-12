@@ -76,6 +76,17 @@ uint32_t NetworkManager::strToInt(const std::string &str) const
     }
 }
 
+float NetworkManager::strToFloat(const std::string &str) const
+{
+    try {
+        return std::stof(str);
+    } catch (const std::invalid_argument &e) {
+        throw NetworkException("Invalid argument: " + str);
+    } catch (const std::out_of_range &e) {
+        throw NetworkException("Out of range: " + str);
+    }
+}
+
 void NetworkManager::msz(std::vector<std::string> &command)
 {
     EventManager::MapSizeEvent event;
@@ -404,8 +415,18 @@ void NetworkManager::edi(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::sgt([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::sgt(std::vector<std::string> &command)
 {
+    EventManager::TimeUnitRequestEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.timeUnit = strToFloat(command[1]);
+    m_gameState->timeUnitRequestCommand(event);
+    if (m_debugMode) {
+        std::cout << "Current time unit: " << event.timeUnit << std::endl;
+    }
 }
 
 void NetworkManager::sst([[maybe_unused]]std::vector<std::string> &command)

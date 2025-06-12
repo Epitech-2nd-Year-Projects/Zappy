@@ -94,6 +94,14 @@ class NetworkManager {
         u_int32_t strToInt(const std::string &str) const;
 
         /**
+         * @brief Convert a string to a float
+         * @param str The string to convert
+         * @return float The converted float
+         */
+        float strToFloat(const std::string &str) const;
+
+
+        /**
          * @brief Read messages from the server
          */
         void readMessages();
