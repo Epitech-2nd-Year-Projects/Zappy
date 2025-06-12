@@ -26,4 +26,14 @@ bool Egg::isHatched() const
 {
     return m_hatched;
 }
+
+int Egg::getEggId() const
+{
+    return m_eggId;
+}
+
+std::string Egg::getTeamName() const
+{
+    return m_teamName;
+}
 }

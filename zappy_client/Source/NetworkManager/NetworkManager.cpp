@@ -359,8 +359,21 @@ void NetworkManager::pdi(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::enw([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::enw(std::vector<std::string> &command)
 {
+    EventManager::EggLaidEvent event;
+
+    if (command.size() != 5) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    event.parentId = strToInt(command[2]);
+    event.position.x = strToInt(command[3]);
+    event.position.y = strToInt(command[4]);
+    m_gameState->eggLaidCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.parentId << " laid a egg " << event.eggId << " at x: " << event.position.x << " y: " << event.position.y << std::endl;
+    }
 }
 
 void NetworkManager::ebo([[maybe_unused]]std::vector<std::string> &command)

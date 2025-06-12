@@ -41,6 +41,7 @@ class GameState {
         void resourceDropCommand(const EventManager::PlayerResourceDropEvent &event);
         void resourceTakeCommand(const EventManager::PlayerResourceTakeEvent &event);
         void playerDeathCommand(const EventManager::PlayerDeathEvent &event);
+        void eggLaidCommand(const EventManager::EggLaidEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;

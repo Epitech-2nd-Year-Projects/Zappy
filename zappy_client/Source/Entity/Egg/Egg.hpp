@@ -47,7 +47,18 @@ class Egg : public AEntity {
          * @return True if the egg has hatched, false otherwise
          */
         bool isHatched() const;
-        
+
+        /**
+         * @brief Get the team name this egg belongs to
+         * @return The team name associated with this egg
+         */
+        int getEggId() const;
+
+        /**
+         * @brief Get the team name this egg belongs to
+         * @return The team name associated with this egg
+         */
+        std::string getTeamName() const;
     protected:
         std::string m_teamName; ///< The team name this egg belongs to
         Types::EggId m_eggId;   ///< Unique identifier for the egg

@@ -209,6 +209,21 @@ void GameState::playerDeathCommand(const EventManager::PlayerDeathEvent &event)
     m_eventBus.publish(event);
 }
 
+void GameState::eggLaidCommand(const EventManager::EggLaidEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_players.find(event.parentId);
+
+    if (it == m_players.end() || !it->second) {
+        std::cerr << "Player with ID " << event.parentId << " not found in game state for egg laid command." << std::endl;
+        return;
+    }
+    auto player = it->second;
+    auto egg = std::make_shared<Egg>(m_nextEntityId++, event.eggId, event.position, player->getTeamName());
+    m_eggs[event.eggId] = egg;
+    m_entities[egg->getId()];
+    m_eventBus.publish(event.eggId);
+}
 
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
