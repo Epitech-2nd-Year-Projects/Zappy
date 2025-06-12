@@ -35,7 +35,7 @@ OBJ			= 	$(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 TEST_SRC	=	$(TEST_DIR)tests.c
 TEST_OBJ 	= 	$(TEST_SRC:$(TEST_DIR)%.c=$(OBJ_DIR)%.o)
 
-NAME 		=   zappy_server
+NAME 		=   server
 NAME_TEST	=	unit_tests
 
 .PHONY: all clean fclean re valgrind
