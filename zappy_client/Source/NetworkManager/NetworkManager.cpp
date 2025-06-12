@@ -339,14 +339,24 @@ void NetworkManager::pgt(std::vector<std::string> &command)
     }
     event.playerId = strToInt(command[1]);
     event.resourceType = static_cast<Types::ResourceType>(strToInt(command[2]));
+    m_gameState->resourceTakeCommand(event);
     if (m_debugMode) {
         std::cout << "Player: " << event.playerId << ", collected " << static_cast<int>(event.resourceType) << std::endl;
     }
-    m_gameState->resourceTakeCommand(event);
 }
 
-void NetworkManager::pdi([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pdi(std::vector<std::string> &command)
 {
+    EventManager::PlayerDeathEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerDeathCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player: " << event.playerId << " is dead" << std::endl;
+    }
 }
 
 void NetworkManager::enw([[maybe_unused]]std::vector<std::string> &command)

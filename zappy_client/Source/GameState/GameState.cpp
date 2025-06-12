@@ -181,7 +181,7 @@ void GameState::resourceDropCommand(const EventManager::PlayerResourceDropEvent 
     m_eventBus.publish(event);
 }
 
-void GameState::resourceDropCommand(const EventManager::PlayerResourceDropEvent &event)
+void GameState::resourceTakeCommand(const EventManager::PlayerResourceTakeEvent &event)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     auto it = m_players.find(event.playerId);
@@ -194,6 +194,21 @@ void GameState::resourceDropCommand(const EventManager::PlayerResourceDropEvent 
     player->addResource(event.resourceType);
     m_eventBus.publish(event);
 }
+
+void GameState::playerDeathCommand(const EventManager::PlayerDeathEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_players.find(event.playerId);
+
+    if (it == m_players.end() || !it->second) {
+        std::cerr << "Player with ID " << event.playerId << " not found in game state for player death command." << std::endl;
+        return;
+    }
+    auto player = it->second;
+    player->setAlive(false);
+    m_eventBus.publish(event);
+}
+
 
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
