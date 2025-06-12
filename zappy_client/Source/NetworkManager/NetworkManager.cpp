@@ -457,8 +457,21 @@ void NetworkManager::seg(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::smg([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::smg(std::vector<std::string> &command)
 {
+    EventManager::ServerMessageEvent event;
+
+    if (command.size() < 2) {
+        return;
+    }
+    event.message = command[1];
+    for (size_t i = 2; i < command.size(); ++i) {
+        event.message += " " + command[i];
+    }
+    m_gameState->serverMessageCommand(event);
+    if (m_debugMode) {
+        std::cout << "Server message: " << event.message << std::endl;
+    }
 }
 
 void NetworkManager::suc([[maybe_unused]]std::vector<std::string> &command)

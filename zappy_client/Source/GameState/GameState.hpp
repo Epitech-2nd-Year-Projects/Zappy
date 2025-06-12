@@ -47,12 +47,14 @@ class GameState {
         void timeUnitRequestCommand(const EventManager::TimeUnitRequestEvent &event);
         void timeUnitModificationCommand(const EventManager::TimeUnitModificationEvent &event);
         void gameEndCommand(const EventManager::GameEndEvent &event);
+        void serverMessageCommand(const EventManager::ServerMessageEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;
         std::vector<std::shared_ptr<Player>> getTeamPlayers(const std::string &teamName) const;
         std::shared_ptr<MapTile> getMapTile(const Types::Position &position) const;
         std::shared_ptr<Egg> getEgg(uint32_t id) const;
+        std::vector<std::string> getMessagesServer() const;
         std::string getWinnerTeam() const;
         float getTimeUnit() const;
     private:
@@ -63,6 +65,7 @@ class GameState {
         std::unordered_map<std::string, std::vector<std::shared_ptr<Player>>> m_teams;
         std::unordered_map<uint32_t, std::shared_ptr<Egg>> m_eggs;
         std::map<Types::Position, std::shared_ptr<MapTile>> m_mapTiles;
+        std::vector<std::string> m_messagesServer;
         std::string m_winnerTeam;
         bool m_mapCreated = false;
         int m_nextEntityId = 0;

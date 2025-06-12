@@ -278,6 +278,14 @@ void GameState::gameEndCommand(const EventManager::GameEndEvent &event)
     m_eventBus.publish(event);
 }
 
+void GameState::serverMessageCommand(const EventManager::ServerMessageEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    m_messagesServer.push_back(event.message);
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);
@@ -312,6 +320,11 @@ std::shared_ptr<MapTile> GameState::getMapTile(const Types::Position &position) 
     if (it != m_mapTiles.end())
         return it->second;
     return nullptr;
+}
+
+std::vector<std::string> GameState::getMessagesServer() const
+{
+    return m_messagesServer;
 }
 
 std::shared_ptr<Egg> GameState::getEgg(uint32_t id) const
