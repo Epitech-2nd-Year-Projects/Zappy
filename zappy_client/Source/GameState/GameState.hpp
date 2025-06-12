@@ -39,6 +39,7 @@ class GameState {
         void incantationEndCommand(const EventManager::IncantationEndEvent &event);
         void playerForkCommand(const EventManager::PlayerForkEvent &event);
         void resourceDropCommand(const EventManager::PlayerResourceDropEvent &event);
+        void resourceTakeCommand(const EventManager::PlayerResourceTakeEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;

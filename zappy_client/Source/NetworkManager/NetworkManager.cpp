@@ -330,8 +330,19 @@ void NetworkManager::pdr(std::vector<std::string> &command)
     m_gameState->resourceDropCommand(event);
 }
 
-void NetworkManager::pgt([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pgt(std::vector<std::string> &command)
 {
+    EventManager::PlayerResourceTakeEvent event;
+
+    if (command.size() != 3) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    event.resourceType = static_cast<Types::ResourceType>(strToInt(command[2]));
+    if (m_debugMode) {
+        std::cout << "Player: " << event.playerId << ", collected " << static_cast<int>(event.resourceType) << std::endl;
+    }
+    m_gameState->resourceTakeCommand(event);
 }
 
 void NetworkManager::pdi([[maybe_unused]]std::vector<std::string> &command)
