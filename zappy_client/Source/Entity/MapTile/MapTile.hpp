@@ -67,7 +67,7 @@ class MapTile : public AEntity{
          * @brief Add resources to this tile
          * @param resourceArray An array with all ressources of this tile
          */
-        void addResource(Types::ResourceArray resourceArray);
+        void setResource(Types::ResourceArray resourceArray);
         
         /**
          * @brief Remove a player from this tile

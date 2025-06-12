@@ -135,11 +135,11 @@ class NetworkManager {
         std::string createMessage();
 
         /**
-         * @brief Split a string by newline characters
+         * @brief Split a string by Word characters
          * @param input The input string
          * @return std::vector<std::string> Vector of split strings
          */
-        std::vector<std::string> splitByNewline(const std::string &input);
+        std::vector<std::string> splitByWord(const std::string &input);
 
         /**
          * @brief Handle the "msz" command (map size)

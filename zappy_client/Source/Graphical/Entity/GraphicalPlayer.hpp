@@ -68,7 +68,7 @@ class GraphicalPlayer : public Player {
          * @brief Renders the player's 3D model in the game world.
          * @note This method overrides the pure virtual `draw()` from the IEntity interface.
          */
-        void draw() const override;
+        void draw() const;
 
         /**
          * @brief Sets the player's animation to the default idle loop.

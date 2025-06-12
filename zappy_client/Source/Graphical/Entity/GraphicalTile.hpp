@@ -55,7 +55,7 @@ class GraphicalTile : public MapTile {
         /**
          * @brief Draw the map tile.
         */
-        void draw() const override;
+        void draw() const;
 
         Vector3 getGraphicalPosition() const;
 
