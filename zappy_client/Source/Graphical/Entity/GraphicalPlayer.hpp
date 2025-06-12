@@ -59,6 +59,12 @@ class GraphicalPlayer : public Player {
         void update();
 
         /**
+         * @brief Gets the graphical position of the player in 3D space.
+         * @return The Vector3 position used for rendering.
+         */
+        Vector3 getGraphicalPosition() const;
+
+        /**
          * @brief Renders the player's 3D model in the game world.
          * @note This method overrides the pure virtual `draw()` from the IEntity interface.
          */

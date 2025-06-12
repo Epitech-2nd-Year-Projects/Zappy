@@ -64,4 +64,9 @@ void GraphicalPlayer::playIncantationAnimation()
         }
     }
 }
+
+Vector3 GraphicalPlayer::getGraphicalPosition() const
+{
+    return m_graphicPosition;
+}
 }
