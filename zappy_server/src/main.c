@@ -5,6 +5,8 @@
 ** main
 */
 
+#include <stdlib.h>
+
 #include "arguments.h"
 #include "constants.h"
 #include "server.h"
