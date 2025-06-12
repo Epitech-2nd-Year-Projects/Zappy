@@ -12,6 +12,7 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <optional>
 #include "Raylib/Core/Window.hpp"
 #include "Raylib/Graphics/Camera.hpp"
 #include "Graphical/Types/GraphicalTypes.hpp"
@@ -20,6 +21,7 @@
 #include "Graphical/Entity/GraphicalTile.hpp"
 #include "Graphical/Entity/GraphicalPlayer.hpp"
 #include "Graphical/Utils/Map.hpp"
+#include "Raylib/Core/Input.hpp"
 
 namespace GUI {
 
@@ -42,6 +44,13 @@ private:
     Map m_map;
     std::map<std::string, std::vector<std::shared_ptr<GraphicalPlayer>>> m_teams;
     std::map<Types::ResourceType, Raylib::Graphics::Model> m_resource;
+    std::optional<std::pair<std::size_t, std::size_t>> m_selectedTileCoords;
+    bool m_showTileInfo;
+
+    void CheckMapTileClicked();
+    void renderSelectedTileBorder();
+    void renderTileInfoUI();
+    std::string getTileInfoText(const GraphicalTile& tile) const;
 
     void render();
     void renderMap();

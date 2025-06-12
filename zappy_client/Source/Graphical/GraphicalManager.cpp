@@ -5,6 +5,7 @@
 ** GraphicalManager
 */
 
+#include <float.h>
 #include "GraphicalManager.hpp"
 #include "Raylib/Graphics/Shapes.hpp"
 
@@ -20,6 +21,8 @@ GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
             {0.0f, 1.0f, 0.0f},
             45.0f,
             CAMERA_PERSPECTIVE)
+, m_selectedTileCoords(std::nullopt)
+, m_showTileInfo(false)
 {
     subscribeToEvents();
     initResourceMap();
@@ -256,6 +259,35 @@ void GraphicalManager::renderPlayers()
             player.get()->update();
             player.get()->draw();
         }
+    }
+}
+
+void GraphicalManager::CheckMapTileClicked()
+{
+    std::optional<std::pair<std::size_t, std::size_t>> closestTileCoords = std::nullopt;
+    float closestDistance = FLT_MAX;
+
+    if (!Raylib::Core::Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        return;
+    Vector2 mousePosition = Raylib::Core::Input::GetMousePosition();
+    Ray mouseRay = Raylib::Core::Input::GetMouseRay(mousePosition, m_camera.GetRLCamera());
+
+    for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
+        for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
+            GraphicalTile& tile = m_map.at(x, y);
+            RayCollision collision = tile.m_model.CheckCollision(mouseRay);
+            if (collision.hit && collision.distance < closestDistance) {
+                closestDistance = collision.distance;
+                closestTileCoords = std::make_pair(x, y);
+            }
+        }
+    }
+    if (closestTileCoords.has_value()) {
+        m_selectedTileCoords = closestTileCoords;
+        m_showTileInfo = true;
+    } else {
+        m_selectedTileCoords = std::nullopt;
+        m_showTileInfo = false;
     }
 }
 }
