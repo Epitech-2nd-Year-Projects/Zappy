@@ -19,7 +19,7 @@ void GraphicalManager::subscribeToMapEvents()
     );
     m_eventBus.subscribe<EventManager::TileContentEvent>(
         [this](const EventManager::TileContentEvent &event) {
-            m_map.at(event.position.x, event.position.y).addResource(event.resources);
+            m_map.at(event.position.x, event.position.y).setResource(event.resources);
         }
     );
     m_eventBus.subscribe<EventManager::MapContentEvent>(
@@ -82,7 +82,7 @@ void GraphicalManager::initMap(std::size_t width, std::size_t height)
 void GraphicalManager::addMapRessources(const EventManager::MapContentEvent &mapContent)
 {
     for (std::size_t i = 0; i < mapContent.positions.size(); ++i) {
-        m_map.at(mapContent.positions[i].x, mapContent.positions[i].x).addResource(
+        m_map.at(mapContent.positions[i].x, mapContent.positions[i].x).setResource(
             mapContent.resourceArrays[i]);
     }
 }
