@@ -115,6 +115,8 @@ void GraphicalManager::renderPlayers()
 {
     for (auto team : m_teams) {
         for (auto player : team.second) {
+            if (!player.get()->isAlive())
+                continue;
             player.get()->update();
             player.get()->draw();
         }

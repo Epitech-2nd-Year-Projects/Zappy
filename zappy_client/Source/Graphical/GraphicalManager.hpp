@@ -80,6 +80,7 @@ private:
     void updatePlayerInventary(const EventManager::PlayerInventoryEvent &playerInventary);
     void updatePlayerDrop(const EventManager::PlayerResourceDropEvent &playerDrop);
     void updatePlayerTake(const EventManager::PlayerResourceTakeEvent &playerTake);
+    void updatePlayerDeath(const EventManager::PlayerDeathEvent &playerDeath);
     std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {

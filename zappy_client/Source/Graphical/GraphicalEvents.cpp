@@ -156,4 +156,11 @@ void GraphicalManager::updatePlayerTake(const EventManager::PlayerResourceTakeEv
     m_map.at(position.x, position.y).removeResource(playerTake.resourceType, 1);
     m_teams[index.first][index.second].get()->addResource(playerTake.resourceType, 1);
 }
+
+void GraphicalManager::updatePlayerDeath(const EventManager::PlayerDeathEvent &playerDeath)
+{
+    std::pair<std::string, std::size_t> index = getPlayerLocation(playerDeath.playerId);
+
+    m_teams[index.first][index.second].get()->setAlive(false);
+}
 }
