@@ -474,12 +474,14 @@ void NetworkManager::smg(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::suc([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::suc(std::vector<std::string> &command)
 {
+    return;
 }
 
-void NetworkManager::sbp([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::sbp(std::vector<std::string> &command)
 {
+    return;
 }
 
 // !Functions to handle commands

@@ -100,7 +100,6 @@ class NetworkManager {
          */
         float strToFloat(const std::string &str) const;
 
-
         /**
          * @brief Read messages from the server
          */
