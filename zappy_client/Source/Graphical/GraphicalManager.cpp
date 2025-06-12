@@ -233,14 +233,17 @@ void GraphicalManager::render()
 {
     while(!m_window.ShouldClose()) {
         m_camera.Update(CAMERA_FREE);
+        CheckMapTileClicked();
         m_window.BeginDrawing();
         m_window.ClearBackground(SKYBLUE);
         m_camera.BeginMode3D();
         renderMap();
         renderPlayers();
         renderMapResources();
+        renderSelectedTileBorder();
         //Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
         m_camera.EndMode3D();
+        renderTileInfoUI();
         m_window.EndDrawing();
     }
 }
@@ -276,7 +279,11 @@ void GraphicalManager::CheckMapTileClicked()
     for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
         for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
             GraphicalTile &tile = m_map.at(x, y);
-            RayCollision collision = tile.m_model.CheckCollision(mouseRay);
+            RayCollision collision = tile.m_model.CheckCollisionMeshes(
+                mouseRay,
+                tile.getGraphicalPosition(),
+                TILE_SCALE
+            );
             if (collision.hit && collision.distance < closestDistance) {
                 closestDistance = collision.distance;
                 closestTileCoords = std::make_pair(x, y);
@@ -300,7 +307,7 @@ void GraphicalManager::renderSelectedTileBorder()
     const GraphicalTile &selectedTile = m_map.at(x, y);
     Vector3 tilePos = selectedTile.getGraphicalPosition();
     
-    selectedTile.m_model.DrawWireframe(tilePos, TILE_SCALE, BLACK);
+    selectedTile.m_model.DrawWireframe(tilePos, TILE_SCALE, BLUE);
 }
 
 void GraphicalManager::renderTileInfoUI()
@@ -310,21 +317,21 @@ void GraphicalManager::renderTileInfoUI()
 
     auto [x, y] = m_selectedTileCoords.value();
     const GraphicalTile &selectedTile = m_map.at(x, y);
-    int rectX = m_windowInfo.windowWidth - 300;
+    int rectX = m_windowInfo.windowWidth - 450;
     int rectY = 20;
-    int rectWidth = 280;
-    int rectHeight = 200;
+    int rectWidth = 440;
+    int rectHeight = 360;
     std::string info = getTileInfoText(selectedTile);
     int textY = rectY + 40;
-    int lineHeight = 15;
+    int lineHeight = 30;
 
     Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {50, 50, 50, 200});
     Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, BLACK);
-    Raylib::Graphics::Shapes::DrawText("Tile Information", rectX + 10, rectY + 10, 18, WHITE);    
+    Raylib::Graphics::Shapes::DrawText("Tile Informations:\n", rectX + 10, rectY + 10, 22, WHITE);    
     std::istringstream iss(info);
     std::string line;
     while (std::getline(iss, line)) {
-        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 12, WHITE);
+        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 20, WHITE);
         textY += lineHeight;
     }
 }
@@ -340,11 +347,10 @@ std::string GraphicalManager::getTileInfoText(const GraphicalTile &tile) const
     };
 
     oss << "Position: (" << pos.x << ", " << pos.y << ")\n";
+    oss << "Player number: " << tile.getNbPlayers() << std::endl;
     oss << "Resources:\n";
     for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
-        if (resources[i] > 0) {
             oss << "  " << resourceNames[i] << ": " << resources[i] << "\n";
-        }
     }
     return oss.str();
 }
