@@ -270,6 +270,14 @@ void GameState::timeUnitModificationCommand(const EventManager::TimeUnitModifica
     m_eventBus.publish(event);
 }
 
+void GameState::gameEndCommand(const EventManager::GameEndEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    m_winnerTeam = event.winningTeam;
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);
@@ -313,5 +321,10 @@ std::shared_ptr<Egg> GameState::getEgg(uint32_t id) const
     if (it != m_eggs.end())
         return it->second;
     return nullptr;
+}
+
+std::string GameState::getWinnerTeam() const
+{
+    return m_winnerTeam;
 }
 }

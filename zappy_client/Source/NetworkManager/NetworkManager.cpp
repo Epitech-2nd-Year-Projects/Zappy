@@ -443,8 +443,18 @@ void NetworkManager::sst(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::seg([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::seg(std::vector<std::string> &command)
 {
+    EventManager::GameEndEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.winningTeam = command[1];
+    m_gameState->gameEndCommand(event);
+    if (m_debugMode) {
+        std::cout << "Game ended, winning team: " << event.winningTeam << std::endl;
+    }
 }
 
 void NetworkManager::smg([[maybe_unused]]std::vector<std::string> &command)
