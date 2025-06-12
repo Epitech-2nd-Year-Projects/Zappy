@@ -105,6 +105,26 @@ public:
      */
     ::RayCollision CheckCollisionMesh(const ::Ray &ray) const;
 
+    /**
+     * @brief Draws the model as a wireframe (outline only).
+     * This renders all the edges of the model's meshes, giving a precise outline
+     * that follows the actual geometry rather than a simple bounding box.
+     * @param position The world position to draw the wireframe.
+     * @param rotationAxis The axis around which to rotate the model.
+     * @param rotationAngle The rotation angle in degrees.
+     * @param scale The scaling vector (X, Y, Z).
+     * @param tint The color for the wireframe lines (defaults to BLACK).
+     */
+    void DrawWireframe(Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint = BLACK) const;
+
+    /**
+     * @brief Draws the model as a wireframe with simple parameters.
+     * @param position The world position to draw the wireframe.
+     * @param scale The uniform scaling factor.
+     * @param tint The color for the wireframe lines (defaults to BLACK).
+     */
+    void DrawWireframe(Vector3 position, float scale, Color tint = BLACK) const;
+
 private:
     ::Model model_;
 

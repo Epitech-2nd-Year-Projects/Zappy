@@ -60,6 +60,16 @@ bool Model::IsReady() const
     return GetRayCollisionBox(ray, bbox);
 }
 
+void Model::DrawWireframe(Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) const
+{
+    ::DrawModelWiresEx(model_, position, rotationAxis, rotationAngle, scale, tint);
+}
+
+void Model::DrawWireframe(Vector3 position, float scale, Color tint) const
+{
+    DrawWireframe(position, {0.0f, 1.0f, 0.0f}, 0.0f, {scale, scale, scale}, tint);
+}
+
 ::RayCollision Model::CheckCollisionMesh(const ::Ray &ray) const
 {
     RayCollision closestCollision = {};
