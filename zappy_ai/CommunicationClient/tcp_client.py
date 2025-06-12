@@ -1,4 +1,4 @@
-import socket
+import asyncio
 
 class CommunicationClient:
     """
@@ -13,10 +13,11 @@ class CommunicationClient:
         @brief Constructor.
         Initializes the socket to None and the internal receive buffer.
         """
-        self.socket = None
+        self.socket_reader: asyncio.StreamReader | None = None
+        self.socket_writer: asyncio.StreamWriter | None = None
         self.buffer = b''
 
-    def connect_to_server(self, host: str, port: int) -> bool:
+    async def connect_to_server(self, host: str, port: int) -> bool:
         """
         @brief Connects to the server.
 
@@ -25,13 +26,12 @@ class CommunicationClient:
         @return True on successful connection, False otherwise.
         """
         try:
-            self.socket = socket.create_connection((host, port))
-            self.socket.setblocking(True)
+            self.socket_reader, self.socket_writer = await asyncio.open_connection(host, port)
             return True
-        except (socket.error, socket.gaierror):
+        except Exception:
             return False
 
-    def send_cmd(self, message: str) -> bool:
+    async def send_cmd(self, message: str) -> bool:
         """
         @brief Sends a single line (terminated by '\n') to the server.
 
@@ -39,12 +39,15 @@ class CommunicationClient:
         @return True on success, False on failure.
         """
         try:
-            self.socket.sendall((message + '\n').encode())
+            if self.socket_writer is None:
+                return False
+            self.socket_writer.write((message + '\n').encode())
+            await self.socket_writer.drain()
             return True
-        except socket.error:
+        except Exception:
             return False
 
-    def receive_cmd(self) -> str:
+    async def receive_cmd(self) -> str:
         """
         @brief Receives a full line from the server.
 
@@ -52,22 +55,21 @@ class CommunicationClient:
 
         @return The received line without the newline character, or an empty string on failure or disconnection.
         """
-        while b'\n' not in self.buffer:
-            try:
-                data = self.socket.recv(1024)
-                if not data:
-                    return ''
-                self.buffer += data
-            except socket.error:
+        try:
+            if self.socket_reader is None:
                 return ''
-        line, self.buffer = self.buffer.split(b'\n', 1)
-        return line.decode()
+            line = await self.socket_reader.readline()
+            return line.decode().rstrip('\n')
+        except Exception:
+            return ''
 
-    def close_connection(self):
+    async def close_connection(self):
         """
         @brief Closes the connection to the server.
         Safely shuts down the socket and resets internal state.
         """
-        if self.socket:
-            self.socket.close()
-            self.socket = None
+        if self.socket_writer:
+            self.socket_writer.close()
+            await self.socket_writer.wait_closed()
+            self.socket_reader = None
+            self.socket_writer = None
