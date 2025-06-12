@@ -10,7 +10,6 @@
     #define CONSTANTS_H_
 
     #define EXIT_ERROR 84
-    #define EXIT_SUCCESS 0
     #define ERROR -1
 
     #define USAGE_MSG_1 "USAGE: %s -p port -x width -y height -n name1 name2"
