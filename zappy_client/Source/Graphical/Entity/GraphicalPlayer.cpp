@@ -36,8 +36,20 @@ void GraphicalPlayer::update()
 
 void GraphicalPlayer::draw() const
 {
-    m_model.Draw(m_graphicPosition, m_scale, WHITE);   
-}
+    float rotationAngle = 0.0f;
+    Vector3 rotationAxis = { 0.0f, 1.0f, 0.0f };
+    Vector3 scaleVector = { m_scale, m_scale, m_scale };
+
+    if (m_orientation == Types::Orientation::NORTH)
+        rotationAngle = 180.0f;
+    if (m_orientation == Types::Orientation::EAST)
+        rotationAngle = 270.0f;
+    if (m_orientation == Types::Orientation::SOUTH)
+        rotationAngle = 0.0f;
+    if (m_orientation == Types::Orientation::WEST)
+        rotationAngle = 90.0f;
+    m_model.Draw(m_graphicPosition, rotationAxis, rotationAngle, scaleVector, WHITE);
+} 
 
 void GraphicalPlayer::playIdleAnimation()
 {
