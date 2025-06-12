@@ -85,25 +85,38 @@ public:
      */
     ::Model &GetRLModel() { return model_; }
 
-    /**
-     * @brief Checks for a collision between a ray and the model's bounding box.
-     * This is a fast, low-cost check, ideal for preliminary collision tests.
+/**
+     * @brief Checks for a collision between a ray and the model's bounding box
+     * at a specific world position. This is a fast, low-cost check.
      * @param ray The ray to test for collision.
-     * @return A RayCollision structure containing information about the hit
-     * (hit, distance, point, normal).
+     * @param position The world position of the model.
+     * @return A RayCollision structure.
      */
-    ::RayCollision CheckCollision(const ::Ray &ray) const;
+    ::RayCollision CheckCollisionBoundingBox(const ::Ray &ray, Vector3 position) const;
 
     /**
-     * @brief Checks for a precise collision between a ray and the model's meshes.
+     * @brief Checks for a precise collision between a ray and the model's meshes
+     * at a specific world position and scale.
      * This is a more performance-intensive check that tests against the actual
-     * model geometry (triangles). It is recommended to first check against the
-     * bounding box.
+     * model geometry (triangles).
      * @param ray The ray to test for collision.
-     * @return A RayCollision structure for the closest hit found among all
-     * meshes. If no hit, `collision.hit` will be false.
+     * @param position The world position of the model.
+     * @param scale The uniform scaling factor of the model.
+     * @return A RayCollision structure for the closest hit found.
      */
-    ::RayCollision CheckCollisionMesh(const ::Ray &ray) const;
+    ::RayCollision CheckCollisionMeshes(const ::Ray &ray, Vector3 position, float scale) const;
+
+    /**
+     * @brief Checks for a precise collision between a ray and the model's meshes
+     * with detailed transformation.
+     * @param ray The ray to test for collision.
+     * @param position The world position of the model.
+     * @param rotationAxis The axis of rotation.
+     * @param rotationAngle The angle of rotation in degrees.
+     * @param scale The scaling vector of the model.
+     * @return A RayCollision structure for the closest hit found.
+     */
+    ::RayCollision CheckCollisionMeshes(const ::Ray &ray, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale) const;
 
     /**
      * @brief Draws the model as a wireframe (outline only).
