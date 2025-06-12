@@ -50,7 +50,7 @@ private:
     void CheckMapTileClicked();
     void renderSelectedTileBorder();
     void renderTileInfoUI();
-    std::string getTileInfoText(const GraphicalTile& tile) const;
+    std::string getTileInfoText(const GraphicalTile &tile) const;
 
     void render();
     void renderMap();

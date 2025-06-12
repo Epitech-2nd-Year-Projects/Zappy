@@ -6,6 +6,7 @@
 */
 
 #include <float.h>
+#include <sstream>
 #include "GraphicalManager.hpp"
 #include "Raylib/Graphics/Shapes.hpp"
 
@@ -274,7 +275,7 @@ void GraphicalManager::CheckMapTileClicked()
 
     for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
         for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
-            GraphicalTile& tile = m_map.at(x, y);
+            GraphicalTile &tile = m_map.at(x, y);
             RayCollision collision = tile.m_model.CheckCollision(mouseRay);
             if (collision.hit && collision.distance < closestDistance) {
                 closestDistance = collision.distance;
@@ -289,5 +290,62 @@ void GraphicalManager::CheckMapTileClicked()
         m_selectedTileCoords = std::nullopt;
         m_showTileInfo = false;
     }
+}
+
+void GraphicalManager::renderSelectedTileBorder()
+{
+    if (!m_selectedTileCoords.has_value())
+        return;
+    auto [x, y] = m_selectedTileCoords.value();
+    const GraphicalTile &selectedTile = m_map.at(x, y);
+    Vector3 tilePos = selectedTile.getGraphicalPosition();
+    
+    selectedTile.m_model.DrawWireframe(tilePos, TILE_SCALE, BLACK);
+}
+
+void GraphicalManager::renderTileInfoUI()
+{
+    if (!m_showTileInfo || !m_selectedTileCoords.has_value())
+        return;
+
+    auto [x, y] = m_selectedTileCoords.value();
+    const GraphicalTile &selectedTile = m_map.at(x, y);
+    int rectX = m_windowInfo.windowWidth - 300;
+    int rectY = 20;
+    int rectWidth = 280;
+    int rectHeight = 200;
+    std::string info = getTileInfoText(selectedTile);
+    int textY = rectY + 40;
+    int lineHeight = 15;
+
+    Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {50, 50, 50, 200});
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, BLACK);
+    Raylib::Graphics::Shapes::DrawText("Tile Information", rectX + 10, rectY + 10, 18, WHITE);    
+    std::istringstream iss(info);
+    std::string line;
+    while (std::getline(iss, line)) {
+        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 12, WHITE);
+        textY += lineHeight;
+    }
+}
+
+std::string GraphicalManager::getTileInfoText(const GraphicalTile &tile) const
+{
+    std::ostringstream oss;
+    Types::Position pos = tile.getPosition();
+    const auto &resources = tile.getResources();
+    std::vector<std::string> resourceNames = {
+        "Food", "Linemate", "Deraumere", "Sibur", 
+        "Mendiane", "Phiras", "Thystame"
+    };
+
+    oss << "Position: (" << pos.x << ", " << pos.y << ")\n";
+    oss << "Resources:\n";
+    for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
+        if (resources[i] > 0) {
+            oss << "  " << resourceNames[i] << ": " << resources[i] << "\n";
+        }
+    }
+    return oss.str();
 }
 }
