@@ -240,6 +240,20 @@ void GameState::eggConnectionCommand(const EventManager::EggConnectionEvent &eve
     m_eventBus.publish(event);
 }
 
+void GameState::eggDeathCommand(const EventManager::EggDeathEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_eggs.find(event.eggId);
+
+    if (it == m_eggs.end() || !it->second) {
+        std::cerr << "Egg with ID " << event.eggId << " not found in game state for egg death command." << std::endl;
+        return;
+    }
+    auto egg = it->second;
+    egg->setAlive(false);
+    m_eventBus.publish(event);
+}
+
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
 {
     auto it = m_entities.find(id);

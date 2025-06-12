@@ -390,8 +390,18 @@ void NetworkManager::ebo(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::edi([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::edi(std::vector<std::string> &command)
 {
+    EventManager::EggDeathEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    m_gameState->eggDeathCommand(event);
+    if (m_debugMode) {
+        std::cout << "Egg " << event.eggId << " has been destroyed" << std::endl;
+    }
 }
 
 void NetworkManager::sgt([[maybe_unused]]std::vector<std::string> &command)

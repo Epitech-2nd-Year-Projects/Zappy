@@ -41,6 +41,12 @@ class Egg : public AEntity {
          * @param hatched True if the egg has hatched, false otherwise
          */
         void setHatched(bool hatched);
+
+        /**
+         * @brief Set the alive state of the egg
+         * @param alive True if the egg is alive, false otherwise
+         */
+        void setAlive(bool alive);
         
         /**
          * @brief Check if the egg has hatched
@@ -59,9 +65,16 @@ class Egg : public AEntity {
          * @return The team name associated with this egg
          */
         std::string getTeamName() const;
+
+        /**
+         * @brief Check if the egg is alive
+         * @return True if the egg is alive, false otherwise
+         */
+        bool isAlive() const;
     protected:
         std::string m_teamName; ///< The team name this egg belongs to
         Types::EggId m_eggId;   ///< Unique identifier for the egg
         bool m_hatched;         ///< Flag indicating if the egg has hatched
+        bool m_isAlive = true; ///< Flag indicating if the egg is alive 
 };
 }
