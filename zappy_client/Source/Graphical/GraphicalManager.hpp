@@ -45,12 +45,21 @@ private:
     std::map<std::string, std::vector<std::shared_ptr<GraphicalPlayer>>> m_teams;
     std::map<Types::ResourceType, Raylib::Graphics::Model> m_resource;
     std::optional<std::pair<std::size_t, std::size_t>> m_selectedTileCoords;
+    std::shared_ptr<GraphicalPlayer> m_selectedPlayer;
     bool m_showTileInfo;
+    bool m_showPlayerInfo;
 
+    void CheckObjectClicked();
     void CheckMapTileClicked();
+    void CheckPlayerClicked();
     void renderSelectedTileBorder();
+    void renderSelectedPlayerBorder();
     void renderTileInfoUI();
+    void renderPlayerInfoUI();
+    void renderTeamInfoUI();
     std::string getTileInfoText(const GraphicalTile &tile) const;
+    std::string getPlayerInfoText(const GraphicalPlayer &player) const;
+    std::string getTeamInfoText(const std::string &teamName) const;
 
     void render();
     void renderMap();

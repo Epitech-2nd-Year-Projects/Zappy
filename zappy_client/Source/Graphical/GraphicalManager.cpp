@@ -233,7 +233,7 @@ void GraphicalManager::render()
 {
     while(!m_window.ShouldClose()) {
         m_camera.Update(CAMERA_FREE);
-        CheckMapTileClicked();
+        CheckObjectClicked();
         m_window.BeginDrawing();
         m_window.ClearBackground(SKYBLUE);
         m_camera.BeginMode3D();
@@ -241,9 +241,11 @@ void GraphicalManager::render()
         renderPlayers();
         renderMapResources();
         renderSelectedTileBorder();
-        //Raylib::Graphics::Shapes::DrawSphere({0.0f, 0.0f, 0.0f}, 5.0f, RED);
+        renderSelectedPlayerBorder();
         m_camera.EndMode3D();
         renderTileInfoUI();
+        renderPlayerInfoUI();
+        renderTeamInfoUI();
         m_window.EndDrawing();
     }
 }
@@ -271,8 +273,6 @@ void GraphicalManager::CheckMapTileClicked()
     std::optional<std::pair<std::size_t, std::size_t>> closestTileCoords = std::nullopt;
     float closestDistance = FLT_MAX;
 
-    if (!Raylib::Core::Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        return;
     Vector2 mousePosition = Raylib::Core::Input::GetMousePosition();
     Ray mouseRay = Raylib::Core::Input::GetMouseRay(mousePosition, m_camera.GetRLCamera());
 
@@ -308,6 +308,15 @@ void GraphicalManager::renderSelectedTileBorder()
     Vector3 tilePos = selectedTile.getGraphicalPosition();
     
     selectedTile.m_model.DrawWireframe(tilePos, TILE_SCALE, BLUE);
+}
+
+void GraphicalManager::renderSelectedPlayerBorder()
+{
+    if (!m_showPlayerInfo || m_selectedPlayer == nullptr)
+        return;
+    Vector3 playerPos = m_selectedPlayer->getGraphicalPosition();   
+ 
+    m_selectedPlayer->m_model.DrawWireframe(playerPos, PLAYER_SCALE, RED);
 }
 
 void GraphicalManager::renderTileInfoUI()
@@ -352,6 +361,166 @@ std::string GraphicalManager::getTileInfoText(const GraphicalTile &tile) const
     for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
             oss << "  " << resourceNames[i] << ": " << resources[i] << "\n";
     }
+    return oss.str();
+}
+
+void GraphicalManager::CheckObjectClicked()
+{
+    if (!Raylib::Core::Input::IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        return;
+    CheckPlayerClicked();
+    if (!m_showPlayerInfo)
+        CheckMapTileClicked();
+}
+
+void GraphicalManager::CheckPlayerClicked()
+{
+    Vector2 mousePosition = Raylib::Core::Input::GetMousePosition();
+    Ray mouseRay = Raylib::Core::Input::GetMouseRay(mousePosition, m_camera.GetRLCamera());    
+    std::shared_ptr<GraphicalPlayer> closestPlayer = nullptr;
+    float closestDistance = FLT_MAX;
+
+    for (auto &team : m_teams) {
+        for (auto &player : team.second) {
+            RayCollision collision = player->m_model.CheckCollisionMeshes(
+                mouseRay,
+                player->getGraphicalPosition(),
+                PLAYER_SCALE
+            );
+            if (collision.hit && collision.distance < closestDistance) {
+                closestDistance = collision.distance;
+                closestPlayer = player;
+            }
+        }
+    }
+    if (closestPlayer != nullptr) {
+        m_selectedPlayer = closestPlayer;
+        m_showPlayerInfo = true;        
+        Types::Position playerPos = closestPlayer->getPosition();
+        m_selectedTileCoords = std::make_pair(playerPos.x, playerPos.y);
+        m_showTileInfo = true;
+    } else {
+        m_selectedPlayer = nullptr;
+        m_showPlayerInfo = false;
+    }
+}
+
+void GraphicalManager::renderPlayerInfoUI()
+{
+    if (!m_showPlayerInfo || m_selectedPlayer == nullptr)
+        return;
+
+    int rectWidth = 400;
+    int rectHeight = 530;
+    int rectX = 20;
+    int rectY = 20;
+    std::string info = getPlayerInfoText(*m_selectedPlayer);
+    int textY = rectY + 50;
+    int lineHeight = 30;
+
+    Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {30, 70, 120, 200});
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);
+    Raylib::Graphics::Shapes::DrawText("Player Information:", rectX + 10, rectY + 10, 28, WHITE);
+    std::istringstream iss(info);
+    std::string line;
+    while (std::getline(iss, line)) {
+        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 24, WHITE);
+        textY += lineHeight;
+    }
+}
+
+void GraphicalManager::renderTeamInfoUI()
+{
+    if (!m_showPlayerInfo || m_selectedPlayer == nullptr)
+        return;
+
+    std::string teamName = m_selectedPlayer->getTeamName();
+    int rectWidth = 400;
+    int rectHeight = 250;
+    int rectX = 20;
+    int rectY = 560;
+    std::string info = getTeamInfoText(teamName);
+    int textY = rectY + 50;
+    int lineHeight = 30;
+
+    Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {120, 70, 30, 200});
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);    
+    Raylib::Graphics::Shapes::DrawText("Team Information:", rectX + 10, rectY + 10, 28, WHITE);    
+    std::istringstream iss(info);
+    std::string line;
+    while (std::getline(iss, line)) {
+        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 24, WHITE);
+        textY += lineHeight;
+    }
+}
+
+std::string GraphicalManager::getPlayerInfoText(const GraphicalPlayer &player) const
+{
+    std::ostringstream oss;
+    Types::Position pos = player.getPosition();
+    const auto &inventory = player.getInventory();
+    std::vector<std::string> resourceNames = {
+        "Food", "Linemate", "Deraumere", "Sibur",
+        "Mendiane", "Phiras", "Thystame"
+    };
+
+    oss << "ID: " << player.getPlayerId() << "\n";
+    oss << "Team: " << player.getTeamName() << "\n";
+    oss << "Position: (" << pos.x << ", " << pos.y << ")\n";
+    oss << "Level: " << player.getLevel() << "\n";
+    oss << "Life: " << player.getLife() << "\n";
+    oss << "Status: " << (player.isAlive() ? "Alive" : "Dead") << "\n";    
+    std::string orientationStr;
+    switch (player.getOrientation()) {
+        case Types::Orientation::NORTH: orientationStr = "North"; break;
+        case Types::Orientation::SOUTH: orientationStr = "South"; break;
+        case Types::Orientation::EAST: orientationStr = "East"; break;
+        case Types::Orientation::WEST: orientationStr = "West"; break;
+    }
+    oss << "Orientation: " << orientationStr << "\n\n";
+    oss << "Inventory:\n";
+    for (std::size_t i = 0; i < static_cast<size_t>(Types::ResourceType::COUNT); ++i) {
+        oss << "  " << resourceNames[i] << ": " << inventory[i] << "\n";
+    }
+    return oss.str();
+}
+
+std::string GraphicalManager::getTeamInfoText(const std::string &teamName) const
+{
+    uint32_t minLevel = UINT32_MAX;
+    uint32_t maxLevel = 0;
+    uint32_t aliveCount = 0;
+    uint32_t deadCount = 0;
+    std::ostringstream oss;
+    auto teamIt = m_teams.find(teamName);
+
+    if (teamIt == m_teams.end()) {
+        oss << "Team not found!";
+        return oss.str();
+    }
+    const auto &players = teamIt->second;
+    if (players.empty()) {
+        oss << "No players in team!";
+        return oss.str();
+    }
+    for (const auto &player : players) {
+        uint32_t level = player->getLevel();
+        minLevel = std::min(minLevel, level);
+        maxLevel = std::max(maxLevel, level);
+        
+        if (player->isAlive()) {
+            aliveCount++;
+        } else {
+            deadCount++;
+        }
+    }
+
+    oss << "Team: " << teamName << "\n";
+    oss << "Total players: " << players.size() << "\n";
+    oss << "Players alive: " << aliveCount << "\n";
+    oss << "Players dead: " << deadCount << "\n";
+    oss << "Min level: " << minLevel << "\n";
+    oss << "Max level: " << maxLevel << "\n";
     return oss.str();
 }
 }
