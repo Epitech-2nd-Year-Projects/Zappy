@@ -173,4 +173,14 @@ void GraphicalManager::updatePlayersIncantationStart(const EventManager::Incanta
         m_teams[index.first][index.second].get()->playIncantationAnimation();
     }
 }
+
+void GraphicalManager::updatePlayersIncantationEnd(const EventManager::IncantationEndEvent &incantation)
+{
+     for (auto team : m_teams) {
+        for (auto player : team.second) {
+            if (incantation.position == player.get()->getPosition())
+                player.get()->playIdleAnimation();
+        }
+    }
+}
 }
