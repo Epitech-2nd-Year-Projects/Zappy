@@ -429,8 +429,18 @@ void NetworkManager::sgt(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::sst([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::sst(std::vector<std::string> &command)
 {
+    EventManager::TimeUnitModificationEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.newTimeUnit = strToFloat(command[1]);
+    m_gameState->timeUnitModificationCommand(event);
+    if (m_debugMode) {
+        std::cout << "New time unit: " << event.newTimeUnit << std::endl;
+    }
 }
 
 void NetworkManager::seg([[maybe_unused]]std::vector<std::string> &command)

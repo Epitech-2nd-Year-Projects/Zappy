@@ -45,6 +45,7 @@ class GameState {
         void eggConnectionCommand(const EventManager::EggConnectionEvent &event);
         void eggDeathCommand(const EventManager::EggDeathEvent &event);
         void timeUnitRequestCommand(const EventManager::TimeUnitRequestEvent &event);
+        void timeUnitModificationCommand(const EventManager::TimeUnitModificationEvent &event);
 
         std::shared_ptr<IEntity> getEntity(uint32_t id) const;
         std::shared_ptr<Player> getPlayer(Types::PlayerId playerId) const;
