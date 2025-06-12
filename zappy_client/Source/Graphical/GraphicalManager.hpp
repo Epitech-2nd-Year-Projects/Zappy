@@ -81,6 +81,8 @@ private:
     void updatePlayerDrop(const EventManager::PlayerResourceDropEvent &playerDrop);
     void updatePlayerTake(const EventManager::PlayerResourceTakeEvent &playerTake);
     void updatePlayerDeath(const EventManager::PlayerDeathEvent &playerDeath);
+    void updatePlayersIncantationStart(const EventManager::IncantationStartEvent &incantation);
+    void updatePlayersIncantationEnd(const EventManager::IncantationEndEvent &incantation);
     std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {

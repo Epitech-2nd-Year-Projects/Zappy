@@ -163,4 +163,14 @@ void GraphicalManager::updatePlayerDeath(const EventManager::PlayerDeathEvent &p
 
     m_teams[index.first][index.second].get()->setAlive(false);
 }
+
+void GraphicalManager::updatePlayersIncantationStart(const EventManager::IncantationStartEvent &incantation)
+{
+    std::pair<std::string, std::size_t> index = {0, 0};
+
+    for (auto participant : incantation.participants) {
+        index = getPlayerLocation(participant);
+        m_teams[index.first][index.second].get()->playIncantationAnimation();
+    }
+}
 }
