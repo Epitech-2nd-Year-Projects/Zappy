@@ -376,8 +376,18 @@ void NetworkManager::enw(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::ebo([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::ebo(std::vector<std::string> &command)
 {
+    EventManager::EggConnectionEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    m_gameState->eggConnectionCommand(event);
+    if (m_debugMode) {
+        std::cout << "Egg " << event.eggId << " has hatched" << std::endl;
+    }
 }
 
 void NetworkManager::edi([[maybe_unused]]std::vector<std::string> &command)

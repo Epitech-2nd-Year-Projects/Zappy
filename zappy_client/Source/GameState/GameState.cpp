@@ -219,10 +219,25 @@ void GameState::eggLaidCommand(const EventManager::EggLaidEvent &event)
         return;
     }
     auto player = it->second;
-    auto egg = std::make_shared<Egg>(m_nextEntityId++, event.eggId, event.position, player->getTeamName());
+    std::string teamName = player->getTeamName();
+    auto egg = std::make_shared<Egg>(m_nextEntityId++, event.eggId, event.position, teamName);
     m_eggs[event.eggId] = egg;
     m_entities[egg->getId()];
-    m_eventBus.publish(event.eggId);
+    m_eventBus.publish(event);
+}
+
+void GameState::eggConnectionCommand(const EventManager::EggConnectionEvent &event)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto it = m_eggs.find(event.eggId);
+
+    if (it == m_eggs.end() || !it->second) {
+        std::cerr << "Egg with ID " << event.eggId << " not found in game state for egg connection command." << std::endl;
+        return;
+    }
+    auto egg = it->second;
+    egg->setHatched(true);
+    m_eventBus.publish(event);
 }
 
 std::shared_ptr<IEntity> GameState::getEntity(uint32_t id) const
