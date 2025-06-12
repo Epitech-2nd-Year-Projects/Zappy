@@ -177,7 +177,7 @@ void GameState::resourceDropCommand(const EventManager::PlayerResourceDropEvent 
         return;
     }
     auto player = it->second;
-    player->addResource(event.resourceType);
+    player->removeResource(event.resourceType);
     m_eventBus.publish(event);
 }
 
