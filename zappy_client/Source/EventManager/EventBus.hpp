@@ -10,6 +10,9 @@
 #include <unordered_map>
 #include <typeindex>
 #include <functional>
+#include <queue>
+#include <mutex>
+#include <memory>
 #include "EventManager/IEvent.hpp"
 
 namespace GUI {
@@ -52,7 +55,7 @@ class EventBus {
         void subscribe(Handler<EventType> handler)
         {
             static_assert(std::is_base_of<IEvent, EventType>::value,
-                        "EventType must inehrite from IEvent");
+                          "EventType must inherit from IEvent");
             auto typeId = std::type_index(typeid(EventType));
             auto wrapper = [handler = std::move(handler)](const IEvent &evt) {
                 handler(static_cast<const EventType &>(evt));
@@ -61,33 +64,50 @@ class EventBus {
         }
 
         /**
-         * @brief Publishes an event to all subscribed handlers
+         * @brief Publishes an event asynchronously to be processed later in the main thread
          * 
          * @tparam EventType The type of event being published
-         * @param event The event object to publish
+         * @param event The event object to queue
          */
         template<typename EventType>
-        void publish(const EventType &event) const
+        void publish(const EventType &event)
         {
-            auto it = _subscribers.find(std::type_index(typeid(EventType)));
-            if (it != _subscribers.end()) {
-                for (const auto &handler : it->second) {
-                    handler(event);
+            static_assert(std::is_base_of<IEvent, EventType>::value,
+                          "EventType must inherit from IEvent");
+            std::lock_guard<std::mutex> lock(_queueMutex);
+            _pendingEvents.push(std::make_shared<EventType>(event));
+        }
+
+        /**
+         * @brief Processes all pending events by dispatching them to their subscribed handlers
+         * 
+         * This should be called from the main thread (e.g., once per frame).
+         */
+        void processEvents()
+        {
+            std::queue<std::shared_ptr<IEvent>> eventsToProcess;
+            {
+                std::lock_guard<std::mutex> lock(_queueMutex);
+                std::swap(eventsToProcess, _pendingEvents);
+            }
+            while (!eventsToProcess.empty()) {
+                const std::shared_ptr<IEvent> &event = eventsToProcess.front();
+                auto it = _subscribers.find(std::type_index(typeid(*event)));
+                if (it != _subscribers.end()) {
+                    for (const auto &handler : it->second) {
+                        handler(*event);
+                    }
                 }
+                eventsToProcess.pop();
             }
         }
+
     private:
-        /**
-         * @brief Type alias for internal event handler functions
-         * Handles events through the common IEvent base interface
-         */
         using EventHandler = std::function<void(const IEvent &)>;
-        
-        /**
-         * @brief Map of event type to vector of handlers
-         * Each event type (identified by type_index) has a vector of handlers that process it
-         */
         std::unordered_map<std::type_index, std::vector<EventHandler>> _subscribers;
+
+        mutable std::mutex _queueMutex;
+        std::queue<std::shared_ptr<IEvent>> _pendingEvents;
 };
 } // namespace EventManager
 } // namespace GUI
