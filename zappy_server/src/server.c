@@ -19,6 +19,8 @@
 #include "arguments.h"
 #include "server.h"
 #include "constants.h"
+#include "handshake.h"
+#include "message_queue.h"
 
 static int set_nonblocking(int fd)
 {
@@ -59,8 +61,16 @@ static int create_listener_socket(const arguments_t *args, int max_clients)
 
 static void remove_client(server_t *server, int index)
 {
+    message_t *tmp = NULL;
+
     if (server->clients[index].team_name != NULL) {
         free(server->clients[index].team_name);
+    }
+    while (server->clients[index].out_head != NULL) {
+        tmp = server->clients[index].out_head;
+        server->clients[index].out_head = tmp->next;
+        free(tmp->data);
+        free(tmp);
     }
     close(server->clients[index].fd);
     server->clients[index] = server->clients[server->clients_count - 1];
@@ -81,10 +91,12 @@ static void accept_clients(server_t *s, time_t now)
             continue;
         }
         s->clients[s->clients_count] = (client_t){fd, now,
-            CLIENT_TYPE_UNKNOWN, NULL, {0}, 0};
+            CLIENT_TYPE_UNKNOWN, NULL, {0}, 0,
+            NULL, NULL};
         memset(s->clients[s->clients_count].input_buffer, 0, BUFFER_SIZE);
         s->pfds[s->clients_count + 1].fd = fd;
-        s->pfds[s->clients_count + 1].events = POLLIN;
+        s->pfds[s->clients_count + 1].events = POLLIN | POLLOUT;
+        queue_push(&s->clients[s->clients_count], "WELCOME\n");
         s->clients_count++;
     }
     if (errno != EAGAIN && errno != EWOULDBLOCK)
@@ -101,11 +113,23 @@ static bool process_client(server_t *server, int index, time_t now)
         return false;
     }
     if (pfd->revents & POLLIN) {
-        if (recv(client->fd, buffer, sizeof(buffer), 0) <= 0) {
+        ssize_t r = recv(client->fd, buffer, sizeof(buffer), 0);
+        if (r <= 0)
             return false;
-        }
+        if (client->buffer_pos + (size_t)r >= BUFFER_SIZE)
+            return false;
+        memcpy(client->input_buffer + client->buffer_pos, buffer, (size_t)r);
+        client->buffer_pos += (size_t)r;
+        if (client->type == CLIENT_TYPE_UNKNOWN &&
+            !handshake_process(server, client))
+            return false;
         client->last_active = now;
     }
+    if (pfd->revents & POLLOUT) {
+        if (!queue_send(client))
+            return false;
+    }
+    pfd->events = POLLIN | (client->out_head ? POLLOUT : 0);
     if (difftime(now, client->last_active) > IDLE_TIMEOUT) {
         return false;
     }
@@ -130,6 +154,7 @@ static int setup_server(const arguments_t *args, server_t *server)
     server->max_clients = args->clients > 0 ? args->clients : 10;
     server->listen_fd = create_listener_socket(args, server->max_clients);
     server->clients_count = 0;
+    server->arguments = args;
     if (server->listen_fd < 0) {
         return ERROR;
     }
@@ -166,9 +191,17 @@ static bool server_loop(server_t *server)
 
 static void cleanup_server(server_t *server)
 {
+    message_t *tmp = NULL;
+
     for (int i = 0; i < server->clients_count; i++) {
         if (server->clients[i].team_name != NULL) {
             free(server->clients[i].team_name);
+        }
+        while (server->clients[i].out_head != NULL) {
+            tmp = server->clients[i].out_head;
+            server->clients[i].out_head = tmp->next;
+            free(tmp->data);
+            free(tmp);
         }
         close(server->clients[i].fd);
     }
