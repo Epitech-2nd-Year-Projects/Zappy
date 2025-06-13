@@ -12,7 +12,7 @@
 
 namespace GUI {
 
-GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
+GraphicalManager::GraphicalManager(std::shared_ptr<EventManager::EventBus> eventBus)
 : m_eventBus(eventBus)
 , m_windowInfo({"Zappy", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT})
 , m_window(m_windowInfo.windowWidth, m_windowInfo.windowHeight, m_windowInfo.windowName)
