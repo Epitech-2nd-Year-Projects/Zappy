@@ -1,0 +1,12 @@
+# Blender MTL File: 'Gems.blend'
+# Material Count: 1
+
+newmtl SolidOrangeGem
+Ns 609.192134
+Ka 1.000000 1.000000 1.000000
+Kd 0.969558 0.235641 0.117656
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.550000
+d 1.000000
+illum 2

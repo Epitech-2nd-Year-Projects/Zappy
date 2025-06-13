@@ -36,7 +36,7 @@ void Map::init(std::size_t width, std::size_t height)
             id = y * width + x;
             logicalPos = {static_cast<int32_t>(x), static_cast<int32_t>(y)};
             graphicPos = {static_cast<float>(x * TILE_SPACING), 0.0f, static_cast<float>(y * TILE_SPACING)};
-            modelName = "Assets/Map_Island.glb";
+            modelName = "Source/Graphical/Assets/Map_Island.glb";
             m_tiles.emplace_back(id, logicalPos, modelName, graphicPos);
         }
     }

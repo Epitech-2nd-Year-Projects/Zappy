@@ -5,7 +5,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -75,3 +74,5 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 zappy_gui
+
+build
