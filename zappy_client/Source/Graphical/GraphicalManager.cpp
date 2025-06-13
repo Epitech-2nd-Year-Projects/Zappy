@@ -27,6 +27,7 @@ GraphicalManager::GraphicalManager(std::shared_ptr<EventManager::EventBus> event
 {
     subscribeToEvents();
     initResourceMap();
+    m_textFont = LoadFont("Source/Graphical/Assets/OpenSans.ttf");
 }
 
 GraphicalManager::~GraphicalManager()
@@ -56,6 +57,7 @@ void GraphicalManager::render()
         renderTileInfoUI();
         renderPlayerInfoUI();
         renderTeamInfoUI();
+        renderBroadcastUI();
         m_window.EndDrawing();
     }
 }
@@ -184,21 +186,21 @@ void GraphicalManager::renderTileInfoUI()
 
     auto [x, y] = m_selectedTileCoords.value();
     const GraphicalTile &selectedTile = m_map.at(x, y);
-    int rectX = m_windowInfo.windowWidth - 450;
-    int rectY = 20;
+    float rectX = m_windowInfo.windowWidth - 450;
+    float rectY = 20;
     int rectWidth = 440;
-    int rectHeight = 360;
+    int rectHeight = 400;
     std::string info = getTileInfoText(selectedTile);
-    int textY = rectY + 40;
-    int lineHeight = 30;
+    float textY = rectY + 50;
+    int lineHeight = 35;
 
     Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {50, 50, 50, 200});
     Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, BLACK);
-    Raylib::Graphics::Shapes::DrawText("Tile Informations:\n", rectX + 10, rectY + 10, 22, WHITE);    
+    Raylib::Graphics::Shapes::DrawTextEx(m_textFont, "Tile Informations:\n\n", {rectX + 10, rectY + 10}, 30, 1.3, WHITE);
     std::istringstream iss(info);
     std::string line;
     while (std::getline(iss, line)) {
-        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 20, WHITE);
+        Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 10, textY}, 27, 1.3, WHITE);
         textY += lineHeight;
     }
 }
@@ -270,19 +272,19 @@ void GraphicalManager::renderPlayerInfoUI()
 
     int rectWidth = 400;
     int rectHeight = 530;
-    int rectX = 20;
-    int rectY = 20;
+    float rectX = 20;
+    float rectY = 20;
     std::string info = getPlayerInfoText(*m_selectedPlayer);
-    int textY = rectY + 50;
+    float textY = rectY + 50;
     int lineHeight = 30;
 
     Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {30, 70, 120, 200});
     Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);
-    Raylib::Graphics::Shapes::DrawText("Player Information:", rectX + 10, rectY + 10, 28, WHITE);
+    Raylib::Graphics::Shapes::DrawTextEx(m_textFont, "Player Informations:", {rectX + 10, rectY + 10}, 30, 1.3, WHITE);
     std::istringstream iss(info);
     std::string line;
     while (std::getline(iss, line)) {
-        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 24, WHITE);
+        Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 10, textY}, 25, 1.3, WHITE);
         textY += lineHeight;
     }
 }
@@ -295,19 +297,44 @@ void GraphicalManager::renderTeamInfoUI()
     std::string teamName = m_selectedPlayer->getTeamName();
     int rectWidth = 400;
     int rectHeight = 250;
-    int rectX = 20;
-    int rectY = 560;
+    float rectX = 20;
+    float rectY = 560;
     std::string info = getTeamInfoText(teamName);
-    int textY = rectY + 50;
-    int lineHeight = 30;
+    float textY = rectY + 50;
+    int lineHeight = 32;
 
     Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {120, 70, 30, 200});
-    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);    
-    Raylib::Graphics::Shapes::DrawText("Team Information:", rectX + 10, rectY + 10, 28, WHITE);    
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE); 
+    Raylib::Graphics::Shapes::DrawTextEx(m_textFont, "Team Informations:", {rectX + 10, rectY + 10}, 30, 1.3, WHITE);
+    
     std::istringstream iss(info);
     std::string line;
     while (std::getline(iss, line)) {
-        Raylib::Graphics::Shapes::DrawText(line, rectX + 10, textY, 24, WHITE);
+        Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 10, textY}, 26, 1.3, WHITE);
+        textY += lineHeight;
+    }
+}
+
+void GraphicalManager::renderBroadcastUI()
+{
+    if (Raylib::Core::Input::IsKeyPressed(KEY_B))
+        m_displayBroadcast = !m_displayBroadcast;
+    if (!m_displayBroadcast)
+        return;
+    int rectWidth = 440;
+    int rectHeight = 300;
+    float rectX = m_windowInfo.windowWidth - rectWidth - 20;
+    float rectY = m_windowInfo.windowHeight - rectHeight - 80;
+    float textY = rectY + 60.0f;
+    float lineHeight = 30.0f;
+    float spacing = 1.3f;
+
+    Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {20, 20, 20, 200});
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);
+    Raylib::Graphics::Shapes::DrawTextEx(m_textFont, "Broadcasts:", {rectX + 15, rectY + 15}, 30, spacing, WHITE);
+
+    for (const auto& line : m_broadcasts) {
+        Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 15, textY}, 24, spacing, WHITE);
         textY += lineHeight;
     }
 }
