@@ -55,6 +55,7 @@ void GraphicalManager::render()
         renderTileInfoUI();
         renderPlayerInfoUI();
         renderTeamInfoUI();
+        renderBroadcastUI();
         m_window.EndDrawing();
     }
 }
@@ -307,6 +308,30 @@ void GraphicalManager::renderTeamInfoUI()
     std::string line;
     while (std::getline(iss, line)) {
         Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 10, textY}, 26, 1.3, WHITE);
+        textY += lineHeight;
+    }
+}
+
+void GraphicalManager::renderBroadcastUI()
+{
+    if (Raylib::Core::Input::IsKeyPressed(KEY_B))
+        m_displayBroadcast = !m_displayBroadcast;
+    if (!m_displayBroadcast)
+        return;
+    int rectWidth = 440;
+    int rectHeight = 300;
+    float rectX = m_windowInfo.windowWidth - rectWidth - 20;
+    float rectY = m_windowInfo.windowHeight - rectHeight - 80;
+    float textY = rectY + 60.0f;
+    float lineHeight = 30.0f;
+    float spacing = 1.3f;
+
+    Raylib::Graphics::Shapes::DrawRectangle(rectX, rectY, rectWidth, rectHeight, {20, 20, 20, 200});
+    Raylib::Graphics::Shapes::DrawRectangleLines(rectX, rectY, rectWidth, rectHeight, WHITE);
+    Raylib::Graphics::Shapes::DrawTextEx(m_textFont, "Broadcasts:", {rectX + 15, rectY + 15}, 30, spacing, WHITE);
+
+    for (const auto& line : m_broadcasts) {
+        Raylib::Graphics::Shapes::DrawTextEx(m_textFont, line, {rectX + 15, textY}, 24, spacing, WHITE);
         textY += lineHeight;
     }
 }

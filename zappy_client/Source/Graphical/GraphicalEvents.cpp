@@ -66,6 +66,11 @@ void GraphicalManager::subscribeToPlayerEvents()
             updatePlayerTake(event);
         }
     );
+    m_eventBus.subscribe<EventManager::PlayerBroadcastEvent>(
+        [this](const EventManager::PlayerBroadcastEvent &event) {
+            pushBroadcastsMessage(event.senderId, event.message);
+        }
+    );
 }
 
 void GraphicalManager::subscribeToEvents()
@@ -182,5 +187,12 @@ void GraphicalManager::updatePlayersIncantationEnd(const EventManager::Incantati
                 player.get()->playIdleAnimation();
         }
     }
+}
+
+void GraphicalManager::pushBroadcastsMessage(Types::PlayerId playerId, const std::string &message)
+{
+    if (m_broadcasts.size() >= MAX_BROADCASTS_MESSAGES)
+        m_broadcasts.pop_front();
+    m_broadcasts.push_back(("Player " + std::to_string(playerId) + " : " + message));
 }
 }

@@ -13,6 +13,7 @@
 #include <memory>
 #include <utility>
 #include <optional>
+#include <list>
 #include "Raylib/Core/Window.hpp"
 #include "Raylib/Graphics/Camera.hpp"
 #include "Graphical/Types/GraphicalTypes.hpp"
@@ -27,6 +28,7 @@ namespace GUI {
 
     constexpr std::size_t DEFAULT_WINDOW_WIDTH = 1920;
     constexpr std::size_t DEFAULT_WINDOW_HEIGHT = 1080;
+    constexpr std::size_t MAX_BROADCASTS_MESSAGES = 10;
 
 class GraphicalManager {
 public:
@@ -49,6 +51,8 @@ private:
     bool m_showTileInfo;
     bool m_showPlayerInfo;
     ::Font m_textFont;
+    std::list<std::string> m_broadcasts;
+    bool m_displayBroadcast;
 
     void CheckObjectClicked();
     void CheckMapTileClicked();
@@ -58,6 +62,7 @@ private:
     void renderTileInfoUI();
     void renderPlayerInfoUI();
     void renderTeamInfoUI();
+    void renderBroadcastUI();
     std::string getTileInfoText(const GraphicalTile &tile) const;
     std::string getPlayerInfoText(const GraphicalPlayer &player) const;
     std::string getTeamInfoText(const std::string &teamName) const;
@@ -84,6 +89,7 @@ private:
     void updatePlayerDeath(const EventManager::PlayerDeathEvent &playerDeath);
     void updatePlayersIncantationStart(const EventManager::IncantationStartEvent &incantation);
     void updatePlayersIncantationEnd(const EventManager::IncantationEndEvent &incantation);
+    void pushBroadcastsMessage(Types::PlayerId playerId, const std::string &message);
     std::pair<std::string, std::size_t> getPlayerLocation(uint32_t id);
 
     class GraphicalManagerException : public std::exception {
