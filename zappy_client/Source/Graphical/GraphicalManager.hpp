@@ -48,6 +48,7 @@ private:
     std::shared_ptr<GraphicalPlayer> m_selectedPlayer;
     bool m_showTileInfo;
     bool m_showPlayerInfo;
+    ::Font m_textFont;
 
     void CheckObjectClicked();
     void CheckMapTileClicked();
