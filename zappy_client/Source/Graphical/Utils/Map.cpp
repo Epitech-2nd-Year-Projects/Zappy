@@ -5,9 +5,9 @@
 ** Map
 */
 
+#include <iostream>
 #include <cassert>
 #include "Map.hpp"
-
 namespace GUI {
 
 Map::Map() : m_width(0), m_height(0)
@@ -21,6 +21,7 @@ Map::Map(std::size_t width, std::size_t height)
 
 void Map::init(std::size_t width, std::size_t height)
 {
+    std::cout << "Initializing map with dimensions: " << width << "x" << height << std::endl;
     uint32_t id = 0;
     Types::Position logicalPos(0, 0);
     Vector3 graphicPos = {0, 0, 0};

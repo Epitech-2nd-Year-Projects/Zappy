@@ -12,17 +12,17 @@ namespace GUI {
 
 void GraphicalManager::subscribeToMapEvents()
 {
-    m_eventBus.subscribe<EventManager::MapSizeEvent>(
+    m_eventBus->subscribe<EventManager::MapSizeEvent>(
         [this](const EventManager::MapSizeEvent &event) {
             initMap(event.width, event.height);
         }
     );
-    m_eventBus.subscribe<EventManager::TileContentEvent>(
+    m_eventBus->subscribe<EventManager::TileContentEvent>(
         [this](const EventManager::TileContentEvent &event) {
             m_map.at(event.position.x, event.position.y).setResource(event.resources);
         }
     );
-    m_eventBus.subscribe<EventManager::MapContentEvent>(
+    m_eventBus->subscribe<EventManager::MapContentEvent>(
         [this](const EventManager::MapContentEvent &event) {
             addMapRessources(event);
         }
@@ -31,37 +31,37 @@ void GraphicalManager::subscribeToMapEvents()
 
 void GraphicalManager::subscribeToPlayerEvents()
 {
-    m_eventBus.subscribe<EventManager::TeamNamesEvent>(
+    m_eventBus->subscribe<EventManager::TeamNamesEvent>(
         [this](const EventManager::TeamNamesEvent &event) {
             loadTeams(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerConnectionEvent>(
+    m_eventBus->subscribe<EventManager::PlayerConnectionEvent>(
         [this](const EventManager::PlayerConnectionEvent &event) {
             loadPlayer(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerMovedEvent>(
+    m_eventBus->subscribe<EventManager::PlayerMovedEvent>(
         [this](const EventManager::PlayerMovedEvent &event) {
             updatePlayerPosition(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerLevelEvent>(
+    m_eventBus->subscribe<EventManager::PlayerLevelEvent>(
         [this](const EventManager::PlayerLevelEvent &event) {
             updatePlayerLevel(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerInventoryEvent>(
+    m_eventBus->subscribe<EventManager::PlayerInventoryEvent>(
         [this](const EventManager::PlayerInventoryEvent &event) {
             updatePlayerInventary(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerResourceDropEvent>(
+    m_eventBus->subscribe<EventManager::PlayerResourceDropEvent>(
         [this](const EventManager::PlayerResourceDropEvent &event) {
             updatePlayerDrop(event);
         }
     );
-    m_eventBus.subscribe<EventManager::PlayerResourceTakeEvent>(
+    m_eventBus->subscribe<EventManager::PlayerResourceTakeEvent>(
         [this](const EventManager::PlayerResourceTakeEvent &event) {
             updatePlayerTake(event);
         }

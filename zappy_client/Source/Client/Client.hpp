@@ -9,11 +9,12 @@
 
 #include <memory>
 #include "NetworkManager/NetworkManager.hpp"
+#include "Graphical/GraphicalManager.hpp"
 
 namespace GUI {
 class Client {
     public:
-        Client(std::shared_ptr<Network::NetworkManager> networkManager);
+        Client(std::shared_ptr<Network::NetworkManager> networkManager, std::shared_ptr<GraphicalManager> graphicalManager);
         ~Client();
 
         void runClient();
@@ -29,5 +30,6 @@ class Client {
         };
     private:
         std::shared_ptr<Network::NetworkManager> m_networkManager;
+        std::shared_ptr<GraphicalManager> m_graphicalManager;
 };
 }

@@ -30,13 +30,13 @@ namespace GUI {
 
 class GraphicalManager {
 public:
-    GraphicalManager(EventManager::EventBus &eventBus);
+    GraphicalManager(std::shared_ptr<EventManager::EventBus> eventBus);
     ~GraphicalManager();
 
     void runRender();
 
 private:
-    EventManager::EventBus m_eventBus;
+    std::shared_ptr<EventManager::EventBus> m_eventBus;
     WindowInformation m_windowInfo;
     Raylib::Core::Window m_window;
     Raylib::Graphics::Camera m_camera;

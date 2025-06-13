@@ -38,7 +38,7 @@ class GameState {
          * @brief Constructs a GameState object
          * @param eventBus Reference to the event bus for publishing state changes
          */
-        GameState(EventManager::EventBus &eventBus);
+        GameState(std::shared_ptr<EventManager::EventBus> eventBus);
         
         /**
          * @brief Destroys the GameState object
@@ -231,7 +231,7 @@ class GameState {
         float getTimeUnit() const;
     private:
         std::mutex m_mutex; /**< Mutex for synchronizing access to the game state */
-        EventManager::EventBus m_eventBus; /**< Event bus for publishing state changes */
+        std::shared_ptr<EventManager::EventBus> m_eventBus; /**< Event bus for publishing state changes */
         std::unordered_map<uint32_t, std::shared_ptr<IEntity>> m_entities; /**< All entities in the game */
         std::unordered_map<Types::PlayerId, std::shared_ptr<Player>> m_players; /**< All players in the game */
         std::unordered_map<std::string, std::vector<std::shared_ptr<Player>>> m_teams; /**< All teams and their players */

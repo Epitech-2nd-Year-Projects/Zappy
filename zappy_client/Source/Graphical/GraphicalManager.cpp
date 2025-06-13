@@ -5,6 +5,7 @@
 ** GraphicalManager
 */
 
+#include <iostream>
 #include <float.h>
 #include <sstream>
 #include "GraphicalManager.hpp"
@@ -12,7 +13,7 @@
 
 namespace GUI {
 
-GraphicalManager::GraphicalManager(EventManager::EventBus &eventBus)
+GraphicalManager::GraphicalManager(std::shared_ptr<EventManager::EventBus> eventBus)
 : m_eventBus(eventBus)
 , m_windowInfo({"Zappy", DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT})
 , m_window(m_windowInfo.windowWidth, m_windowInfo.windowHeight, m_windowInfo.windowName)
@@ -40,6 +41,7 @@ void GraphicalManager::runRender()
 void GraphicalManager::render()
 {
     while(!m_window.ShouldClose()) {
+        m_eventBus->processEvents();
         m_camera.Update(CAMERA_FREE);
         CheckObjectClicked();
         m_window.BeginDrawing();
@@ -106,6 +108,7 @@ void GraphicalManager::renderMap()
 {
     for (std::size_t x = 0; x < m_map.getWidth(); ++x) {
         for (std::size_t y = 0; y < m_map.getHeight(); ++y) {
+            std::cout << "Rendering tile at (" << x << ", " << y << ")" << std::endl;
             m_map.at(x, y).draw();
         }
     }
