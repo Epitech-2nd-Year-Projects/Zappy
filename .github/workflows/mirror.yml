@@ -1,9 +1,8 @@
 name: Mirror to Epitech Git
 
 on:
-  workflow_run:
-    workflows: ["Format Check"]
-    types: [completed]
+  push:
+    branches: [main]
 
 jobs:
   mirror:
