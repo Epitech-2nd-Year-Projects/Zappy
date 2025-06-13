@@ -27,4 +27,9 @@ void GraphicalTile::draw() const
 {
     m_model.Draw(m_graphicPosition, m_scale, WHITE);
 }
+
+Vector3 GraphicalTile::getGraphicalPosition() const
+{
+    return m_graphicPosition;
+}
 }

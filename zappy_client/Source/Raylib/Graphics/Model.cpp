@@ -7,6 +7,7 @@
 
 #include <float.h>
 #include "Raylib/Graphics/Model.hpp"
+#include <raymath.h>
 
 namespace Raylib {
 namespace Graphics {
@@ -54,26 +55,50 @@ bool Model::IsReady() const
     return model_.meshCount > 0 && model_.meshes != nullptr;
 }
 
-::RayCollision Model::CheckCollision(const ::Ray &ray) const
+::RayCollision Model::CheckCollisionBoundingBox(const ::Ray &ray, Vector3 position) const
 {
-    BoundingBox bbox = GetModelBoundingBox(model_);
-    return GetRayCollisionBox(ray, bbox);
+    BoundingBox localBbox = GetModelBoundingBox(model_);
+    BoundingBox worldBbox = {
+        .min = { localBbox.min.x + position.x, localBbox.min.y + position.y, localBbox.min.z + position.z },
+        .max = { localBbox.max.x + position.x, localBbox.max.y + position.y, localBbox.max.z + position.z }
+    };
+    return GetRayCollisionBox(ray, worldBbox);
+}
+void Model::DrawWireframe(Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) const
+{
+    ::DrawModelWiresEx(model_, position, rotationAxis, rotationAngle, scale, tint);
 }
 
-::RayCollision Model::CheckCollisionMesh(const ::Ray &ray) const
+void Model::DrawWireframe(Vector3 position, float scale, Color tint) const
+{
+    DrawWireframe(position, {0.0f, 1.0f, 0.0f}, 0.0f, {scale, scale, scale}, tint);
+}
+
+::RayCollision Model::CheckCollisionMeshes(const ::Ray &ray, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale) const
 {
     RayCollision closestCollision = {};
     closestCollision.hit = false;
     closestCollision.distance = FLT_MAX;
 
+    Matrix transform = ::MatrixMultiply(
+        ::MatrixMultiply(
+            ::MatrixScale(scale.x, scale.y, scale.z),
+            ::MatrixRotate(rotationAxis, rotationAngle * DEG2RAD)
+        ),
+        ::MatrixTranslate(position.x, position.y, position.z)
+    );
     for (std::size_t i = 0; i < static_cast<std::size_t>(model_.meshCount); ++i) {
-        Mesh mesh = model_.meshes[i];
-        RayCollision collision = GetRayCollisionMesh(ray, mesh, model_.transform);
+        RayCollision collision = GetRayCollisionMesh(ray, model_.meshes[i], transform);
         if (collision.hit && collision.distance < closestCollision.distance) {
             closestCollision = collision;
         }
     }
     return closestCollision;
+}
+
+::RayCollision Model::CheckCollisionMeshes(const ::Ray &ray, Vector3 position, float scale) const
+{
+    return CheckCollisionMeshes(ray, position, {0.0f, 1.0f, 0.0f}, 0.0f, {scale, scale, scale});
 }
 }
 }

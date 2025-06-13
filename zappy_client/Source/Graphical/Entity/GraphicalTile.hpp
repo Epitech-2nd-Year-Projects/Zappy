@@ -20,7 +20,7 @@ namespace GUI {
     /**
      * @brief Default spacing between island of the map
      */
-    constexpr float TILE_SPACING = 5.0f;
+    constexpr float TILE_SPACING = 5.5f;
 
 /**
  * @class GraphicalTile
@@ -56,6 +56,8 @@ class GraphicalTile : public MapTile {
          * @brief Draw the map tile.
         */
         void draw() const;
+
+        Vector3 getGraphicalPosition() const;
 
         Raylib::Graphics::Model m_model;    ///< The 3D model used for rendering the tile.
     protected:
