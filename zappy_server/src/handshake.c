@@ -29,7 +29,7 @@ static int team_free_slots(const server_t *server, const char *team)
     for (int i = 0; i < server->clients_count; i++) {
         if (server->clients[i].team_name != NULL
             && strcmp(server->clients[i].team_name, team) == 0
-            && server->clients[i].type & CLIENT_TYPE_AI) {
+            && server->clients[i].type == CLIENT_TYPE_AI) {
             count++;
         }
     }
@@ -52,8 +52,22 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
         return false;
     }
     client->type = CLIENT_TYPE_AI;
-    if (asprintf(&msg, "%d\n %d %d\n",
+    if (asprintf(&msg, "%d\n%d %d\n",
         slots - 1, server->arguments->width, server->arguments->height) < 0) {
+        return false;
+    }
+    queue_push(client, msg);
+    free(msg);
+    return true;
+}
+
+static bool handle_gui_client(server_t *server, client_t *client)
+{
+    char *msg = NULL;
+
+    client->type = CLIENT_TYPE_GUI;
+    if (asprintf(&msg, "msz %d %d\n",
+        server->arguments->width, server->arguments->height) < 0) {
         return false;
     }
     queue_push(client, msg);
@@ -63,12 +77,15 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
 
 static bool handle_handshake_line(server_t *server, client_t *client, char *line)
 {
+    char *end = line + strlen(line) - 1;
+    while (end > line && (*end == ' ' || *end == '\t' || *end == '\r')) {
+        *end-- = '\0';
+    }
     if (strncmp(line, "TEAM ", 5) == 0) {
         return assign_team(server, client, line + 5);
     }
     if (strcmp(line, "GRAPHIC") == 0) {
-        client->type = CLIENT_TYPE_GUI;
-        return true;
+        return handle_gui_client(server, client);
     }
     return false;
 }
@@ -85,8 +102,12 @@ bool handshake_process(server_t *server, client_t *client)
         line[len] = '\0';
         memmove(client->input_buffer, nl + 1, client->buffer_pos - len - 1);
         client->buffer_pos -= len + 1;
-        if (!handle_handshake_line(server, client, line))
+        if (!handle_handshake_line(server, client, line)) {
             return false;
+        }
+        if (client->type != CLIENT_TYPE_UNKNOWN) {
+            return true;
+        }
         nl = memchr(client->input_buffer, '\n', client->buffer_pos);
     }
     return true;
