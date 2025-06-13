@@ -76,6 +76,17 @@ uint32_t NetworkManager::strToInt(const std::string &str) const
     }
 }
 
+float NetworkManager::strToFloat(const std::string &str) const
+{
+    try {
+        return std::stof(str);
+    } catch (const std::invalid_argument &e) {
+        throw NetworkException("Invalid argument: " + str);
+    } catch (const std::out_of_range &e) {
+        throw NetworkException("Out of range: " + str);
+    }
+}
+
 void NetworkManager::msz(std::vector<std::string> &command)
 {
     EventManager::MapSizeEvent event;
@@ -113,12 +124,49 @@ void NetworkManager::bct(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::tna([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::tna(std::vector<std::string> &command)
 {
+    EventManager::TeamNamesEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.teamNames = command[1];
+    m_gameState->teamNameCommand(event);
+    if (m_debugMode) {
+        std::cout << "Team names: " << event.teamNames << std::endl;
+    }
 }
 
-void NetworkManager::pnw([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pnw(std::vector<std::string> &command)
 {
+    EventManager::PlayerConnectionEvent event;
+    Types::PlayerId playerId;
+    Types::Position position;
+    Types::Orientation orientation;
+    Types::PlayerLvl level;
+    std::string teamName;
+
+    if (command.size() != 7) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    position.x = strToInt(command[2]);
+    position.y = strToInt(command[3]);
+    orientation = static_cast<Types::Orientation>(strToInt(command[4]));
+    level = strToInt(command[5]);
+    teamName = command[6];
+    event.playerId = playerId;
+    event.position = position;
+    event.orientation = orientation;
+    event.level = level;
+    event.teamName = teamName;
+    m_gameState->playerConnectionCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " connected at (" << position.x << ", " << position.y
+                  << ") facing " << static_cast<int>(orientation) << ", level: " << level
+                  << ", team: " << teamName << std::endl;
+    }
 }
 
 void NetworkManager::ppo(std::vector<std::string> &command)
@@ -144,80 +192,296 @@ void NetworkManager::ppo(std::vector<std::string> &command)
     }
 }
 
-void NetworkManager::plv([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::plv(std::vector<std::string> &command)
 {
+    EventManager::PlayerLevelEvent event;
+    Types::PlayerId playerId;
+    Types::PlayerLvl level;
+
+    if (command.size() != 3) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    level = strToInt(command[2]);
+    event.playerId = playerId;
+    event.newLevel = level;
+    m_gameState->playerLevelCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " leveled up to " << level << std::endl;
+    }
 }
 
-void NetworkManager::pin([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pin(std::vector<std::string> &command)
 {
+    EventManager::PlayerInventoryEvent event;
+    Types::PlayerId playerId;
+    Types::ResourceArray inventory;
+
+    if (command.size() != 11) {
+        return;
+    }
+    playerId = strToInt(command[1]);
+    event.playerId = playerId;
+    event.position.x = strToInt(command[2]);
+    event.position.y = strToInt(command[3]);
+    for (size_t i = 0; i < 8; ++i) {
+        inventory[i] = strToInt(command[i + 4]);
+    }
+    event.inventory = inventory;
+    m_gameState->playerInventoryCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << playerId << " inventory at (" << event.position.x << ", "
+                  << event.position.y << "): ";
+        for (const auto &res : inventory) {
+            std::cout << res << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
-void NetworkManager::pex([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pex(std::vector<std::string> &command)
 {
+    EventManager::PlayerExpulsionEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerExpulsionCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.playerId << " has been expelled" << std::endl;
+    }
 }
 
-void NetworkManager::pbc([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pbc(std::vector<std::string> &command)
 {
+    EventManager::PlayerBroadcastEvent event;
+
+    if (command.size() != 3) {
+        return;
+    }
+    event.senderId = strToInt(command[1]);
+    event.message = command[2];
+    m_gameState->playerBroadcastCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.senderId << " broadcasted: " << event.message << std::endl;
+    }
 }
 
-void NetworkManager::pic([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pic(std::vector<std::string> &command)
 {
+    EventManager::IncantationStartEvent event;
+    Types::Position position;
+    Types::PlayerLvl level;
+
+    if (command.size() < 5) {
+        return;
+    }
+    position.x = strToInt(command[1]);
+    position.y = strToInt(command[2]);
+    level = strToInt(command[3]);
+    for (size_t i = 4; i < command.size(); ++i) {
+        event.participants.push_back(strToInt(command[i]));
+    }
+    event.position = position;
+    m_gameState->incantationStartCommand(event);
+    if (m_debugMode) {
+        std::cout << "Incantation started at (" << position.x << ", " << position.y
+                  << ") for level " << level << " with participants: ";
+        for (const auto &participant : event.participants) {
+            std::cout << participant << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
-void NetworkManager::pie([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pie(std::vector<std::string> &command)
 {
+    EventManager::IncantationEndEvent event;
+
+    if (command.size() != 4) {
+        return;
+    }
+    event.position.x = strToInt(command[1]);
+    event.position.y = strToInt(command[2]);
+    event.result = strToInt(command[3]) != 0;
+    m_gameState->incantationEndCommand(event);
+    if (m_debugMode) {
+        std::cout << "Incantation ended at (" << event.position.x << ", " << event.position.y
+                  << ") with result: " << (event.result ? "success" : "failure") << std::endl;
+    }
 }
 
-void NetworkManager::pfk([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pfk(std::vector<std::string> &command)
 {
+    EventManager::PlayerForkEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerForkCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.playerId << " has forked" << std::endl;
+    }
 }
 
-void NetworkManager::pdr([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pdr(std::vector<std::string> &command)
 {
+    EventManager::PlayerResourceDropEvent event;
+
+    if (command.size() != 3) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    event.resourceType = static_cast<Types::ResourceType>(strToInt(command[2]));
+    if (m_debugMode) {
+        std::cout << "Player: " << event.playerId << ", collected " << static_cast<int>(event.resourceType) << std::endl;
+    }
+    m_gameState->resourceDropCommand(event);
 }
 
-void NetworkManager::pgt([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pgt(std::vector<std::string> &command)
 {
+    EventManager::PlayerResourceTakeEvent event;
+
+    if (command.size() != 3) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    event.resourceType = static_cast<Types::ResourceType>(strToInt(command[2]));
+    m_gameState->resourceTakeCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player: " << event.playerId << ", collected " << static_cast<int>(event.resourceType) << std::endl;
+    }
 }
 
-void NetworkManager::pdi([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::pdi(std::vector<std::string> &command)
 {
+    EventManager::PlayerDeathEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.playerId = strToInt(command[1]);
+    m_gameState->playerDeathCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player: " << event.playerId << " is dead" << std::endl;
+    }
 }
 
-void NetworkManager::enw([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::enw(std::vector<std::string> &command)
 {
+    EventManager::EggLaidEvent event;
+
+    if (command.size() != 5) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    event.parentId = strToInt(command[2]);
+    event.position.x = strToInt(command[3]);
+    event.position.y = strToInt(command[4]);
+    m_gameState->eggLaidCommand(event);
+    if (m_debugMode) {
+        std::cout << "Player " << event.parentId << " laid a egg " << event.eggId << " at x: " << event.position.x << " y: " << event.position.y << std::endl;
+    }
 }
 
-void NetworkManager::ebo([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::ebo(std::vector<std::string> &command)
 {
+    EventManager::EggConnectionEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    m_gameState->eggConnectionCommand(event);
+    if (m_debugMode) {
+        std::cout << "Egg " << event.eggId << " has hatched" << std::endl;
+    }
 }
 
-void NetworkManager::edi([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::edi(std::vector<std::string> &command)
 {
+    EventManager::EggDeathEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.eggId = strToInt(command[1]);
+    m_gameState->eggDeathCommand(event);
+    if (m_debugMode) {
+        std::cout << "Egg " << event.eggId << " has been destroyed" << std::endl;
+    }
 }
 
-void NetworkManager::sgt([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::sgt(std::vector<std::string> &command)
 {
+    EventManager::TimeUnitRequestEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.timeUnit = strToFloat(command[1]);
+    m_gameState->timeUnitRequestCommand(event);
+    if (m_debugMode) {
+        std::cout << "Current time unit: " << event.timeUnit << std::endl;
+    }
 }
 
-void NetworkManager::sst([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::sst(std::vector<std::string> &command)
 {
+    EventManager::TimeUnitModificationEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.newTimeUnit = strToFloat(command[1]);
+    m_gameState->timeUnitModificationCommand(event);
+    if (m_debugMode) {
+        std::cout << "New time unit: " << event.newTimeUnit << std::endl;
+    }
 }
 
-void NetworkManager::seg([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::seg(std::vector<std::string> &command)
 {
+    EventManager::GameEndEvent event;
+
+    if (command.size() != 2) {
+        return;
+    }
+    event.winningTeam = command[1];
+    m_gameState->gameEndCommand(event);
+    if (m_debugMode) {
+        std::cout << "Game ended, winning team: " << event.winningTeam << std::endl;
+    }
 }
 
-void NetworkManager::smg([[maybe_unused]]std::vector<std::string> &command)
+void NetworkManager::smg(std::vector<std::string> &command)
 {
+    EventManager::ServerMessageEvent event;
+
+    if (command.size() < 2) {
+        return;
+    }
+    event.message = command[1];
+    for (size_t i = 2; i < command.size(); ++i) {
+        event.message += " " + command[i];
+    }
+    m_gameState->serverMessageCommand(event);
+    if (m_debugMode) {
+        std::cout << "Server message: " << event.message << std::endl;
+    }
 }
 
 void NetworkManager::suc([[maybe_unused]]std::vector<std::string> &command)
 {
+    return;
 }
 
 void NetworkManager::sbp([[maybe_unused]]std::vector<std::string> &command)
 {
+    return;
 }
 
 // !Functions to handle commands

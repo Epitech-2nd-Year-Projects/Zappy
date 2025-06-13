@@ -14,6 +14,7 @@ Egg::Egg(uint32_t id, Types::EggId eId, Types::Position position, std::string &t
     , m_teamName(teamName)
     , m_eggId(eId)
     , m_hatched(false)
+    , m_isAlive(true)
 {
 }
 
@@ -22,8 +23,28 @@ void Egg::setHatched(bool hatched)
     m_hatched = hatched;
 }
 
+void Egg::setAlive(bool alive)
+{
+    m_isAlive = alive;
+}
+
 bool Egg::isHatched() const
 {
     return m_hatched;
+}
+
+int Egg::getEggId() const
+{
+    return m_eggId;
+}
+
+std::string Egg::getTeamName() const
+{
+    return m_teamName;
+}
+
+bool Egg::isAlive() const
+{
+    return m_isAlive;
 }
 }

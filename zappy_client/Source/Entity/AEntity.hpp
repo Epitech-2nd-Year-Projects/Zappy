@@ -66,7 +66,11 @@ class AEntity : public IEntity {
          */
         Types::Orientation getOrientation() const;
 
-        
+        /**
+         * @brief Get the unique identifier of the entity
+         * @return The unique identifier of the entity
+         */
+        uint32_t getId() const;
     protected:
         uint32_t m_id;              ///< Unique identifier for the entity
         Types::Position m_position; ///< Current position in the game world
