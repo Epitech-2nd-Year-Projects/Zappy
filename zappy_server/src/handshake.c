@@ -41,18 +41,14 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
     char *msg = NULL;
     int slots = 0;
 
-    if (!is_valid_team(server->arguments, name)) {
+    if (!is_valid_team(server->arguments, name))
         return false;
-    }
     slots = team_free_slots(server, name);
-    if (slots <= 0) {
+    if (slots <= 0)
         return false;
-    }
     client->team_name = strdup(name);
-    if (client->team_name == NULL) {
-        perror("strdup");
-        return false;
-    }
+    if (client->team_name == NULL)
+        return perror("strdup"), false;
     client->type = CLIENT_TYPE_AI;
     if (asprintf(&msg, "%d\n%d %d\n",
         slots - 1, server->arguments->width, server->arguments->height) < 0) {
@@ -61,8 +57,7 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
         return false;
     }
     queue_push(client, msg);
-    free(msg);
-    return true;
+    return free(msg), true;
 }
 
 static bool handle_gui_client(server_t *server, client_t *client)
@@ -79,11 +74,12 @@ static bool handle_gui_client(server_t *server, client_t *client)
     return true;
 }
 
-static bool handle_handshake_line(server_t *server, client_t *client, char *line)
+static bool handle_handshake_line(server_t *server, client_t *client,
+    char *line)
 {
-    char *end = line + strlen(line) - 1;
-    while (end > line && (*end == ' ' || *end == '\t' || *end == '\r')) {
-        *end-- = '\0';
+    for (char *end = line + strlen(line) - 1; end > line
+        && (*end == ' ' || *end == '\t' || *end == '\r'); end--) {
+        *end = '\0';
     }
     if (strncmp(line, "TEAM ", 5) == 0) {
         return assign_team(server, client, line + 5);
@@ -97,23 +93,21 @@ static bool handle_handshake_line(server_t *server, client_t *client, char *line
 bool handshake_process(server_t *server, client_t *client)
 {
     char *nl = memchr(client->input_buffer, '\n', client->buffer_pos);
+    char line[BUFFER_SIZE] = {0};
+    size_t len = 0;
 
     while (nl != NULL) {
-        char line[BUFFER_SIZE];
-        size_t len = (size_t)(nl - client->input_buffer);
-
+        len = (size_t)(nl - client->input_buffer);
         memcpy(line, client->input_buffer, len);
         line[len] = '\0';
         memmove(client->input_buffer, nl + 1, client->buffer_pos - len - 1);
         client->buffer_pos -= len + 1;
-
         if (!handle_handshake_line(server, client, line)) {
             return false;
         }
         if (client->type != CLIENT_TYPE_UNKNOWN) {
             return true;
         }
-
         nl = memchr(client->input_buffer, '\n', client->buffer_pos);
     }
     return true;
