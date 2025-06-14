@@ -41,11 +41,13 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
     char *msg = NULL;
     int slots = 0;
 
-    if (!is_valid_team(server->arguments, name))
+    if (!is_valid_team(server->arguments, name)) {
         return false;
+    }
     slots = team_free_slots(server, name);
-    if (slots <= 0)
+    if (slots <= 0) {
         return false;
+    }
     client->team_name = strdup(name);
     if (client->team_name == NULL) {
         perror("strdup");
@@ -54,6 +56,8 @@ static bool assign_team(server_t *server, client_t *client, const char *name)
     client->type = CLIENT_TYPE_AI;
     if (asprintf(&msg, "%d\n%d %d\n",
         slots - 1, server->arguments->width, server->arguments->height) < 0) {
+        free(client->team_name);
+        client->team_name = NULL;
         return false;
     }
     queue_push(client, msg);
@@ -102,12 +106,14 @@ bool handshake_process(server_t *server, client_t *client)
         line[len] = '\0';
         memmove(client->input_buffer, nl + 1, client->buffer_pos - len - 1);
         client->buffer_pos -= len + 1;
+
         if (!handle_handshake_line(server, client, line)) {
             return false;
         }
         if (client->type != CLIENT_TYPE_UNKNOWN) {
             return true;
         }
+
         nl = memchr(client->input_buffer, '\n', client->buffer_pos);
     }
     return true;
