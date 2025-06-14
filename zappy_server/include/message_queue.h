@@ -8,6 +8,8 @@
 #ifndef MESSAGE_QUEUE_H
     #define MESSAGE_QUEUE_H
 
+    #include <stdbool.h>
+
 typedef struct client_s client_t;
 
 typedef struct message_s {
