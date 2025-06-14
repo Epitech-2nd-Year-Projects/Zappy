@@ -28,7 +28,7 @@ static bool validate_arguments(const arguments_t *args)
     }
     if (args->clients <= 0) {
         return fprintf(stderr, "Error:"
-                               " Clients number must be positive\n"), false;
+            " Clients number must be positive\n"), false;
     }
     if (args->freq <= 0) {
         return fprintf(stderr, "Error: Frequency must be positive\n"), false;
@@ -44,13 +44,11 @@ int main(int argc, char **argv)
         free_arguments(&arguments);
         return EXIT_ERROR;
     }
-
     if (!validate_arguments(&arguments)) {
         free_arguments(&arguments);
         print_usage(argv[0]);
         return EXIT_ERROR;
     }
-
     if (run_server(&arguments) == EXIT_ERROR) {
         free_arguments(&arguments);
         return EXIT_ERROR;
