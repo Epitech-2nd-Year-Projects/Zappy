@@ -8,7 +8,8 @@
 #ifndef SERVER_H
     #define SERVER_H
 
-    #include <time.h>
+    #include "message_queue.h"
+    #include "arguments.h"
 
     #define IDLE_TIMEOUT 30
 
@@ -27,6 +28,8 @@ typedef struct client_s {
     char *team_name;
     char input_buffer[BUFFER_SIZE];
     size_t buffer_pos;
+    message_t *out_head;
+    message_t *out_tail;
 } client_t;
 
 typedef struct server_s {
@@ -35,6 +38,7 @@ typedef struct server_s {
     int clients_count;
     struct pollfd *pfds;
     struct client_s *clients;
+    const struct arguments_s *arguments;
 } server_t;
 
 int run_server(const arguments_t *arguments);

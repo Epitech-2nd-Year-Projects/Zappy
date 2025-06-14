@@ -19,22 +19,10 @@
 #include "arguments.h"
 #include "server.h"
 #include "constants.h"
+#include "message_queue.h"
+#include "client.h"
 
-static int set_nonblocking(int fd)
-{
-    int flags = fcntl(fd, F_GETFL, 0);
-
-    if (flags == ERROR) {
-        return ERROR;
-    }
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
-        perror("fcntl");
-        return ERROR;
-    }
-    return EXIT_SUCCESS;
-}
-
-static int create_listener_socket(const arguments_t *args, int max_clients)
+static int create_listener_socket(const arguments_t *args)
 {
     struct sockaddr_in addr = {0};
     int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -51,85 +39,20 @@ static int create_listener_socket(const arguments_t *args, int max_clients)
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(args->port);
     if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0
-        || listen(fd, max_clients) < 0) {
+        || listen(fd, SOMAXCONN) < 0) {
         return close(fd), ERROR;
     }
     return fd;
 }
 
-static void remove_client(server_t *server, int index)
-{
-    if (server->clients[index].team_name != NULL) {
-        free(server->clients[index].team_name);
-    }
-    close(server->clients[index].fd);
-    server->clients[index] = server->clients[server->clients_count - 1];
-    server->pfds[index + 1] = server->pfds[server->clients_count];
-    server->clients_count--;
-}
-
-static void accept_clients(server_t *s, time_t now)
-{
-    for (int fd = accept(s->listen_fd, NULL, NULL); fd >= 0;
-        fd = accept(s->listen_fd, NULL, NULL)) {
-        if (set_nonblocking(fd) < 0) {
-            close(fd);
-            continue;
-        }
-        if (s->clients_count >= s->max_clients) {
-            close(fd);
-            continue;
-        }
-        s->clients[s->clients_count] = (client_t){fd, now,
-            CLIENT_TYPE_UNKNOWN, NULL, {0}, 0};
-        memset(s->clients[s->clients_count].input_buffer, 0, BUFFER_SIZE);
-        s->pfds[s->clients_count + 1].fd = fd;
-        s->pfds[s->clients_count + 1].events = POLLIN;
-        s->clients_count++;
-    }
-    if (errno != EAGAIN && errno != EWOULDBLOCK)
-        perror("accept");
-}
-
-static bool process_client(server_t *server, int index, time_t now)
-{
-    struct pollfd *pfd = &server->pfds[index + 1];
-    client_t *client = &server->clients[index];
-    char buffer[BUFFER_SIZE] = {0};
-
-    if (pfd->revents & (POLLERR | POLLHUP)) {
-        return false;
-    }
-    if (pfd->revents & POLLIN) {
-        if (recv(client->fd, buffer, sizeof(buffer), 0) <= 0) {
-            return false;
-        }
-        client->last_active = now;
-    }
-    if (difftime(now, client->last_active) > IDLE_TIMEOUT) {
-        return false;
-    }
-    return true;
-}
-
-static void handle_clients(server_t *server, time_t now)
-{
-    int i = 0;
-
-    while (i < server->clients_count) {
-        if (!process_client(server, i, now)) {
-            remove_client(server, i);
-            continue;
-        }
-        i++;
-    }
-}
-
 static int setup_server(const arguments_t *args, server_t *server)
 {
-    server->max_clients = args->clients > 0 ? args->clients : 10;
-    server->listen_fd = create_listener_socket(args, server->max_clients);
+    int max_ai = args->team_count * args->clients;
+
+    server->max_clients = max_ai + 1;
+    server->listen_fd = create_listener_socket(args);
     server->clients_count = 0;
+    server->arguments = args;
     if (server->listen_fd < 0) {
         return ERROR;
     }
@@ -166,9 +89,17 @@ static bool server_loop(server_t *server)
 
 static void cleanup_server(server_t *server)
 {
+    message_t *tmp = NULL;
+
     for (int i = 0; i < server->clients_count; i++) {
         if (server->clients[i].team_name != NULL) {
             free(server->clients[i].team_name);
+        }
+        while (server->clients[i].out_head != NULL) {
+            tmp = server->clients[i].out_head;
+            server->clients[i].out_head = tmp->next;
+            free(tmp->data);
+            free(tmp);
         }
         close(server->clients[i].fd);
     }
