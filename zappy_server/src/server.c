@@ -19,22 +19,8 @@
 #include "arguments.h"
 #include "server.h"
 #include "constants.h"
-#include "handshake.h"
 #include "message_queue.h"
-
-static int set_nonblocking(int fd)
-{
-    int flags = fcntl(fd, F_GETFL, 0);
-
-    if (flags == ERROR) {
-        return ERROR;
-    }
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
-        perror("fcntl");
-        return ERROR;
-    }
-    return EXIT_SUCCESS;
-}
+#include "client.h"
 
 static int create_listener_socket(const arguments_t *args)
 {
@@ -57,129 +43,6 @@ static int create_listener_socket(const arguments_t *args)
         return close(fd), ERROR;
     }
     return fd;
-}
-
-static void remove_client(server_t *server, int index)
-{
-    message_t *tmp = NULL;
-
-    if (server->clients[index].team_name != NULL) {
-        free(server->clients[index].team_name);
-    }
-    while (server->clients[index].out_head != NULL) {
-        tmp = server->clients[index].out_head;
-        server->clients[index].out_head = tmp->next;
-        free(tmp->data);
-        free(tmp);
-    }
-    close(server->clients[index].fd);
-    memset(&server->clients[index], 0, sizeof(client_t));
-    if (index < server->clients_count - 1) {
-        server->clients[index] = server->clients[server->clients_count - 1];
-        server->pfds[index + 1] = server->pfds[server->clients_count];
-    }
-    server->clients_count--;
-}
-
-static int count_total_ai_clients(const server_t *server)
-{
-    int count = 0;
-
-    for (int i = 0; i < server->clients_count; i++) {
-        if (server->clients[i].type == CLIENT_TYPE_AI) {
-            count++;
-        }
-    }
-    return count;
-}
-
-static bool can_accept_client(const server_t *server)
-{
-    int max_ai = server->arguments->team_count * server->arguments->clients;
-    int current_ai = count_total_ai_clients(server);
-
-    if (server->clients_count >= server->max_clients) {
-        return false;
-    }
-    return current_ai < max_ai;
-}
-
-static void accept_clients(server_t *s, time_t now)
-{
-    for (int fd = accept(s->listen_fd, NULL, NULL); fd >= 0;
-        fd = accept(s->listen_fd, NULL, NULL)) {
-        if (set_nonblocking(fd) < 0) {
-            close(fd);
-            continue;
-        }
-        if (!can_accept_client(s)) {
-            close(fd);
-            continue;
-        }
-        s->clients[s->clients_count] = (client_t){
-            .fd = fd,
-            .last_active = now,
-            .type = CLIENT_TYPE_UNKNOWN,
-            .team_name = NULL,
-            .buffer_pos = 0,
-            .out_head = NULL,
-            .out_tail = NULL
-        };
-        memset(s->clients[s->clients_count].input_buffer, 0, BUFFER_SIZE);
-        s->pfds[s->clients_count + 1].fd = fd;
-        s->pfds[s->clients_count + 1].events = POLLIN | POLLOUT;
-        s->pfds[s->clients_count + 1].revents = 0;
-        queue_push(&s->clients[s->clients_count], "WELCOME\n");
-        s->clients_count++;
-    }
-    if (errno != EAGAIN && errno != EWOULDBLOCK)
-        perror("accept");
-}
-
-static bool process_client(server_t *server, int index, time_t now)
-{
-    struct pollfd *pfd = &server->pfds[index + 1];
-    client_t *client = &server->clients[index];
-    char buffer[BUFFER_SIZE] = {0};
-
-    if (pfd->revents & (POLLERR | POLLHUP)) {
-        return false;
-    }
-    if (pfd->revents & POLLIN) {
-        ssize_t r = recv(client->fd, buffer, sizeof(buffer), 0);
-        if (r <= 0)
-            return false;
-        if (client->buffer_pos + (size_t)r >= BUFFER_SIZE)
-            return false;
-        memcpy(client->input_buffer + client->buffer_pos, buffer, (size_t)r);
-        client->buffer_pos += (size_t)r;
-        if (client->type == CLIENT_TYPE_UNKNOWN &&
-            !handshake_process(server, client))
-            return false;
-        client->last_active = now;
-    }
-    if (pfd->revents & POLLOUT) {
-        if (!queue_send(client))
-            return false;
-    }
-    pfd->events = POLLIN | (client->out_head ? POLLOUT : 0);
-    if (difftime(now, client->last_active) > IDLE_TIMEOUT) {
-        return false;
-    }
-    return true;
-}
-
-static void handle_clients(server_t *server, time_t now)
-{
-    int i = 0;
-
-    while (i < server->clients_count) {
-        if (!process_client(server, i, now)) {
-            remove_client(server, i);
-            continue;
-        }
-        i++;
-    }
 }
 
 static int setup_server(const arguments_t *args, server_t *server)
