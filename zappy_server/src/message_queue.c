@@ -42,17 +42,14 @@ bool queue_send(client_t *client)
     while (client->out_head != NULL) {
         msg = client->out_head;
         w = send(client->fd, msg->data + msg->sent, msg->len - msg->sent, 0);
-        if (w < 0) {
+        if (w < 0)
             return false;
-        }
         msg->sent += w;
-        if (msg->sent < msg->len) {
+        if (msg->sent < msg->len)
             break;
-        }
         client->out_head = msg->next;
-        if (client->out_head == NULL) {
+        if (client->out_head == NULL)
             client->out_tail = NULL;
-        }
         free(msg->data);
         free(msg);
     }
