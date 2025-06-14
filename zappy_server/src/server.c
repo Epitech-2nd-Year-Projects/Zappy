@@ -36,7 +36,7 @@ static int set_nonblocking(int fd)
     return EXIT_SUCCESS;
 }
 
-static int create_listener_socket(const arguments_t *args, int max_clients)
+static int create_listener_socket(const arguments_t *args)
 {
     struct sockaddr_in addr = {0};
     int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -53,7 +53,7 @@ static int create_listener_socket(const arguments_t *args, int max_clients)
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(args->port);
     if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0
-        || listen(fd, max_clients) < 0) {
+        || listen(fd, SOMAXCONN) < 0) {
         return close(fd), ERROR;
     }
     return fd;
@@ -73,9 +73,35 @@ static void remove_client(server_t *server, int index)
         free(tmp);
     }
     close(server->clients[index].fd);
-    server->clients[index] = server->clients[server->clients_count - 1];
-    server->pfds[index + 1] = server->pfds[server->clients_count];
+    memset(&server->clients[index], 0, sizeof(client_t));
+    if (index < server->clients_count - 1) {
+        server->clients[index] = server->clients[server->clients_count - 1];
+        server->pfds[index + 1] = server->pfds[server->clients_count];
+    }
     server->clients_count--;
+}
+
+static int count_total_ai_clients(const server_t *server)
+{
+    int count = 0;
+
+    for (int i = 0; i < server->clients_count; i++) {
+        if (server->clients[i].type == CLIENT_TYPE_AI) {
+            count++;
+        }
+    }
+    return count;
+}
+
+static bool can_accept_client(const server_t *server)
+{
+    int max_ai = server->arguments->team_count * server->arguments->clients;
+    int current_ai = count_total_ai_clients(server);
+
+    if (server->clients_count >= server->max_clients) {
+        return false;
+    }
+    return current_ai < max_ai;
 }
 
 static void accept_clients(server_t *s, time_t now)
@@ -86,16 +112,23 @@ static void accept_clients(server_t *s, time_t now)
             close(fd);
             continue;
         }
-        if (s->clients_count >= s->max_clients) {
+        if (!can_accept_client(s)) {
             close(fd);
             continue;
         }
-        s->clients[s->clients_count] = (client_t){fd, now,
-            CLIENT_TYPE_UNKNOWN, NULL, {0}, 0,
-            NULL, NULL};
+        s->clients[s->clients_count] = (client_t){
+            .fd = fd,
+            .last_active = now,
+            .type = CLIENT_TYPE_UNKNOWN,
+            .team_name = NULL,
+            .buffer_pos = 0,
+            .out_head = NULL,
+            .out_tail = NULL
+        };
         memset(s->clients[s->clients_count].input_buffer, 0, BUFFER_SIZE);
         s->pfds[s->clients_count + 1].fd = fd;
         s->pfds[s->clients_count + 1].events = POLLIN | POLLOUT;
+        s->pfds[s->clients_count + 1].revents = 0;
         queue_push(&s->clients[s->clients_count], "WELCOME\n");
         s->clients_count++;
     }
@@ -151,8 +184,10 @@ static void handle_clients(server_t *server, time_t now)
 
 static int setup_server(const arguments_t *args, server_t *server)
 {
-    server->max_clients = args->clients > 0 ? args->clients : 10;
-    server->listen_fd = create_listener_socket(args, server->max_clients);
+    int max_ai = args->team_count * args->clients;
+
+    server->max_clients = max_ai + 1;
+    server->listen_fd = create_listener_socket(args);
     server->clients_count = 0;
     server->arguments = args;
     if (server->listen_fd < 0) {
